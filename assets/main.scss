@@ -1,0 +1,26 @@
+---
+---
+
+@import "minima";
+
+/* Dark mode styles */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #121212;
+    color: #e0e0e0;
+  }
+
+  a {
+    color: #82aaff;
+  }
+
+  .site-header,
+  .site-footer {
+    background-color: #1f1f1f;
+    border-color: #333;
+  }
+
+  .highlight {
+    background: #2d2d2d;
+  }
+}
