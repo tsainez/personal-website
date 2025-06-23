@@ -12,6 +12,18 @@
 
   a {
     color: #82aaff;
+    &:hover {
+      color: lighten(#82aaff, 10%);
+    }
+  }
+
+  .site-title,
+  .site-title:visited {
+    color: #e0e0e0;
+  }
+
+  .site-nav .page-link {
+    color: #e0e0e0;
   }
 
   .site-header,
@@ -22,5 +34,14 @@
 
   .highlight {
     background: #2d2d2d;
+    color: #e0e0e0;
   }
+
+  pre,
+  code {
+    background-color: #2d2d2d;
+    color: #e0e0e0;
+  }
+
+  @import "base16-dark";
 }
