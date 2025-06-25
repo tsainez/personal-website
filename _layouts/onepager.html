@@ -1,0 +1,54 @@
+---
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ site.title }}</title>
+  <link rel="stylesheet" href="{{ '/assets/main.css' | relative_url }}" />
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+    }
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+      text-align: center;
+      background: #fafafa;
+    }
+    .hero h1 {
+      font-size: 3rem;
+      margin: 0;
+    }
+    .section {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .footer {
+      text-align: center;
+      padding: 2rem 0;
+      background: #fafafa;
+    }
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <h1>{{ site.title }}</h1>
+    <p>{{ site.description }}</p>
+  </div>
+  <div class="section">
+    {{ content }}
+  </div>
+  <div class="footer">
+    &copy; {{ site.time | date: '%Y' }} {{ site.title }}
+  </div>
+</body>
+</html>
