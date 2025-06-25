@@ -1,0 +1,23 @@
+---
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ site.title }}</title>
+  <link rel="stylesheet" href="{{ '/assets/main.css' | relative_url }}" />
+</head>
+<body class="onepager-body">
+  <div class="onepager-hero">
+    <h1>{{ site.title }}</h1>
+    <p>{{ site.description }}</p>
+  </div>
+  <div class="onepager-section">
+    {{ content }}
+  </div>
+  <div class="onepager-footer">
+    &copy; {{ site.time | date: '%Y' }} {{ site.title }}
+  </div>
+</body>
+</html>
