@@ -4,15 +4,6 @@ title: About
 permalink: /about/
 ---
 
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](https://jekyllrb.com/)
+Hello, I'm Tony Sainez. Right now, I'm working on improving autonomous vehicle performance through **hands-on testing at various proving grounds**. I got my start working for Waymo's testing team in Atwater, and then moved to Zoox.
 
-You can find the source code for Minima at GitHub:
-[jekyll][jekyll-organization] /
-[minima](https://github.com/jekyll/minima)
-
-You can find the source code for Jekyll at GitHub:
-[jekyll][jekyll-organization] /
-[jekyll](https://github.com/jekyll/jekyll)
-
-
-[jekyll-organization]: https://github.com/jekyll
+I never expected to be in the automotive industry, but this is great niche for me. I've been obsessed with **artificial intelligence** since I was a teenager, when I found out that they could beat me at videogames.

@@ -4,4 +4,4 @@
 
 layout: home
 ---
-Work in progress. Come back soon! 
+Welcome to my website! Check out some of these posts below.
