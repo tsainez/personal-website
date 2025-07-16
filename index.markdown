@@ -4,4 +4,6 @@
 
 layout: home
 ---
-Welcome to my website! Check out some of these posts below.
+Welcome to my little website. 👋
+
+Sometimes, I like to write for no particular reason. You can see the posts below.  
