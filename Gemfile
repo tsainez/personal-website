@@ -38,3 +38,9 @@ gem "csv"
 gem "logger"
 
 gem "base64"
+
+group :test do
+  gem "html-proofer", "~> 5.0"
+  gem "rspec", "~> 3.12"
+  gem "rake", "~> 13.0"
+end
