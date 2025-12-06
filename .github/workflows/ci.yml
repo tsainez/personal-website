@@ -1,0 +1,83 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install System Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential zlib1g-dev
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2.2
+          bundler-cache: true
+
+      - name: Compile Website
+        run: bundle exec jekyll build
+
+      - name: Upload Site Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: site-artifact
+          path: _site
+
+  test:
+    name: Test
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install System Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential zlib1g-dev
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2.2
+          bundler-cache: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Download Site Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: site-artifact
+          path: _site
+
+      - name: Run Ruby Tests (RSpec & HTMLProofer)
+        run: bundle exec rake spec
+
+      - name: Run Python Verification Scripts
+        run: python3 tests/test_onepager_title.py
+
+  deploy_check:
+    name: Deploy Check
+    needs: [build, test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify Deployment Readiness
+        run: |
+          echo "Build and Tests passed successfully."
+          echo "The website is ready for deployment."
+          # If this was a real deployment, we would run the deploy commands here.
+          # For a PR, reaching this step means it is deployable.
