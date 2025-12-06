@@ -1,3 +1,15 @@
+# Configuration File
+#
+# Description:
+#   This file contains the global configuration for the Jekyll site.
+#   Settings defined here are accessible in templates via the `site` variable.
+#   It controls site metadata (title, email, description), build settings (theme, plugins),
+#   and exclusion rules.
+#
+# Usage:
+#   - Modify `title`, `email`, `description`, etc. to personalize the site.
+#   - Restart the Jekyll server after making changes to this file.
+
 # Welcome to Jekyll!
 #
 # This config file is meant for settings that affect your whole blog, values

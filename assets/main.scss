@@ -1,6 +1,19 @@
 ---
 ---
 
+/**
+ * Main Stylesheet
+ *
+ * Description:
+ *   This file is the main entry point for the site's CSS. It imports the 'minima'
+ *   theme and then applies custom overrides, specifically for the 'onepager' layout
+ *   and dark mode support.
+ *
+ * Imports:
+ *   - minima: The base Jekyll theme.
+ *   - dracula: Syntax highlighting theme (imported inside the dark mode media query).
+ */
+
 @import "minima";
 
 /* Onepager layout styles */

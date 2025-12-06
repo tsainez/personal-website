@@ -1,3 +1,14 @@
+# Gemfile
+#
+# Description:
+#   This file defines the Ruby gem dependencies for the Jekyll site.
+#   It specifies the source for gems, the version of Jekyll to use,
+#   the theme, and any additional plugins or platform-specific gems.
+#
+# Usage:
+#   - Run `bundle install` to install the dependencies listed here.
+#   - Run `bundle update` to update dependencies.
+
 source "https://rubygems.org"
 # Hello! This is where you manage which Jekyll version is used to run.
 # When you want to use a different version, change it below, save the
