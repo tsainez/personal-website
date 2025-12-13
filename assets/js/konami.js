@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (key === requiredKey) {
       konamiCodePosition++;
       if (konamiCodePosition === konamiCode.length) {
-        activateEasterEgg();
+        activateZeroGravity();
         konamiCodePosition = 0;
       }
     } else {
@@ -25,38 +25,112 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  function activateEasterEgg() {
-    console.log("🌟 You found the secret! 🌟");
+  function activateZeroGravity() {
+    console.log("🚀 Initiating Zero Gravity Mode...");
 
-    // Invert the HTML element to catch the background too
-    document.documentElement.style.filter = "invert(1)";
-    document.documentElement.style.transition = "filter 0.5s ease";
+    // 1. Change Background
+    document.body.style.transition = "background-color 2s ease";
+    document.body.style.backgroundColor = "#050510"; // Deep space
+    document.body.style.color = "#ffffff"; // Make text white
 
-    // Create a floating element
-    const egg = document.createElement('div');
-    egg.innerText = "SURPRISE!";
-    egg.id = "easter-egg-rabbit";
-    egg.style.position = "fixed";
-    egg.style.left = "50%";
-    egg.style.top = "50%";
-    egg.style.fontSize = "100px";
-    egg.style.fontWeight = "bold";
-    egg.style.fontFamily = "sans-serif";
-    egg.style.color = "red"; // This will be inverted to cyan
-    egg.style.transform = "translate(-50%, -50%)";
-    egg.style.zIndex = "9999";
-    egg.style.pointerEvents = "none";
-    egg.style.animation = "spin 2s linear infinite";
-    document.body.appendChild(egg);
+    // Fix links to be visible in space
+    const links = document.querySelectorAll('a');
+    links.forEach(link => {
+        link.style.color = "#66ccff";
+        link.style.transition = "color 1s";
+    });
 
-    // Add CSS for spin
+    // 2. Add Stars
+    for (let i = 0; i < 100; i++) {
+        createStar();
+    }
+
+    // 3. Float Elements
+    const elements = document.querySelectorAll('p, h1, h2, h3, li, span, .site-title, .page-link');
+    elements.forEach(el => {
+        // Only float visible elements that are not part of our effects
+        if (el.offsetParent !== null && !el.classList.contains('star') && el.id !== 'rocket') {
+            applyFloatAnimation(el);
+        }
+    });
+
+    // 4. Launch Rocket
+    createRocket();
+  }
+
+  function createStar() {
+    const star = document.createElement('div');
+    star.classList.add('star');
+    const x = Math.random() * window.innerWidth;
+    const y = Math.random() * window.innerHeight;
+    const size = Math.random() * 3;
+    const duration = Math.random() * 3 + 1;
+
+    star.style.position = 'fixed';
+    star.style.left = `${x}px`;
+    star.style.top = `${y}px`;
+    star.style.width = `${size}px`;
+    star.style.height = `${size}px`;
+    star.style.backgroundColor = 'white';
+    star.style.borderRadius = '50%';
+    star.style.zIndex = '-1';
+    star.style.animation = `twinkle ${duration}s infinite alternate`;
+
+    document.body.appendChild(star);
+  }
+
+  function applyFloatAnimation(el) {
+    el.style.transition = "transform 5s ease-in-out";
+    el.style.display = "inline-block"; // Needed for transform to work on some inline elements
+
+    // Randomize the float pattern
+    const floatId = `float-${Math.random().toString(36).substr(2, 9)}`;
+    const xMove = (Math.random() - 0.5) * 50; // -25 to 25px
+    const yMove = (Math.random() - 0.5) * 50;
+    const rot = (Math.random() - 0.5) * 20; // -10 to 10 deg
+
     const style = document.createElement('style');
     style.innerHTML = `
-      @keyframes spin {
-        0% { transform: translate(-50%, -50%) rotate(0deg); }
-        100% { transform: translate(-50%, -50%) rotate(360deg); }
+      @keyframes ${floatId} {
+        0% { transform: translate(0, 0) rotate(0deg); }
+        50% { transform: translate(${xMove}px, ${yMove}px) rotate(${rot}deg); }
+        100% { transform: translate(0, 0) rotate(0deg); }
       }
     `;
     document.head.appendChild(style);
+
+    // Random delay and duration
+    const duration = Math.random() * 5 + 3; // 3-8s
+    el.style.animation = `${floatId} ${duration}s ease-in-out infinite`;
+  }
+
+  function createRocket() {
+    const rocket = document.createElement('div');
+    rocket.innerText = "🚀";
+    rocket.id = "rocket";
+    rocket.style.position = "fixed";
+    rocket.style.fontSize = "50px";
+    rocket.style.zIndex = "10000";
+    rocket.style.left = "-100px";
+    rocket.style.top = "50%";
+    rocket.style.transition = "left 10s linear, top 10s ease-in-out";
+
+    document.body.appendChild(rocket);
+
+    // Add stars twinkling animation
+    const style = document.createElement('style');
+    style.innerHTML = `
+      @keyframes twinkle {
+        0% { opacity: 0.2; }
+        100% { opacity: 1; }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Animate rocket
+    setTimeout(() => {
+        rocket.style.left = "120%";
+        rocket.style.top = "20%";
+    }, 100);
   }
 });
