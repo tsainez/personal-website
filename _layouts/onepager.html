@@ -5,19 +5,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.google-analytics.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.google-analytics.com; connect-src 'self' https://www.google-analytics.com;">
   <title>{% if page.title %}{{ page.title | escape }} | {% endif %}{{ site.title | escape }}</title>
   <link rel="stylesheet" href="{{ '/assets/main.css' | relative_url }}" />
 </head>
 <body class="onepager-body">
   <div class="onepager-hero">
-    <h1>{{ site.title }}</h1>
-    <p>{{ site.description }}</p>
+    <h1>{{ site.title | escape }}</h1>
+    <p>{{ site.description | escape }}</p>
   </div>
   <div class="onepager-section">
     {{ content }}
   </div>
   <div class="onepager-footer">
-    &copy; {{ site.time | date: '%Y' }} {{ site.title }}
+    &copy; {{ site.time | date: '%Y' }} {{ site.title | escape }}
   </div>
 </body>
 </html>
