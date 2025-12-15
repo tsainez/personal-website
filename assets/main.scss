@@ -3,6 +3,24 @@
 
 @import "minima";
 
+/* UX Enhancements */
+$focus-color: #82aaff;
+
+html {
+  scroll-behavior: smooth;
+}
+
+:focus-visible {
+  outline: 2px solid $focus-color;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 /* Onepager layout styles */
 .onepager-body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
@@ -47,9 +65,12 @@
   }
 
   a {
-    color: #82aaff;
+    color: $focus-color;
     &:hover {
-      color: lighten(#82aaff, 10%);
+      color: lighten($focus-color, 10%);
+    }
+    &:focus-visible {
+      outline-color: lighten($focus-color, 10%);
     }
   }
 
