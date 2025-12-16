@@ -15,7 +15,7 @@ describe 'Content Security Policy' do
     content = csp_meta['content']
 
     expect(content).to include("default-src 'self'")
-    expect(content).to include("script-src 'self' 'unsafe-inline' https://www.google-analytics.com https://www.googletagmanager.com")
+    expect(content).to include("script-src 'self' https://www.google-analytics.com https://www.googletagmanager.com")
     expect(content).to include("style-src 'self' 'unsafe-inline'")
     expect(content).to include("img-src 'self' data: https://www.google-analytics.com")
     expect(content).to include("connect-src 'self' https://www.google-analytics.com")
