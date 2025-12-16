@@ -28,8 +28,15 @@ document.addEventListener('DOMContentLoaded', () => {
   function activateZeroGravity() {
     console.log("🚀 Initiating Zero Gravity Mode...");
 
-    // 1. Change Background
-    document.body.style.transition = "background-color 2s ease";
+    // Check for reduced motion preference
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (reducedMotion) {
+      console.log("Reduced motion detected. Skipping motion effects.");
+    }
+
+    // 1. Change Background (Safe for reduced motion)
+    document.body.style.transition = reducedMotion ? "none" : "background-color 2s ease";
     document.body.style.backgroundColor = "#050510"; // Deep space
     document.body.style.color = "#ffffff"; // Make text white
 
@@ -37,12 +44,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const links = document.querySelectorAll('a');
     links.forEach(link => {
         link.style.color = "#66ccff";
-        link.style.transition = "color 1s";
+        link.style.transition = reducedMotion ? "none" : "color 1s";
     });
 
-    // 2. Add Stars
+    // 2. Add Stars (Static if reduced motion)
     for (let i = 0; i < 100; i++) {
-        createStar();
+        createStar(reducedMotion);
+    }
+
+    // Skip motion-heavy effects if reduced motion is preferred
+    if (reducedMotion) {
+      return;
     }
 
     // 3. Float Elements
@@ -58,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
     createRocket();
   }
 
-  function createStar() {
+  function createStar(reducedMotion) {
     const star = document.createElement('div');
     star.classList.add('star');
     const x = Math.random() * window.innerWidth;
@@ -74,7 +86,10 @@ document.addEventListener('DOMContentLoaded', () => {
     star.style.backgroundColor = 'white';
     star.style.borderRadius = '50%';
     star.style.zIndex = '-1';
-    star.style.animation = `twinkle ${duration}s infinite alternate`;
+
+    if (!reducedMotion) {
+      star.style.animation = `twinkle ${duration}s infinite alternate`;
+    }
 
     document.body.appendChild(star);
   }
