@@ -14,11 +14,20 @@ describe 'Content Security Policy' do
     expect(csp_meta).not_to be_nil
     content = csp_meta['content']
 
+    directives = content.split(';').map(&:strip)
+    script_src = directives.find { |d| d.start_with?('script-src') }
+    style_src = directives.find { |d| d.start_with?('style-src') }
+
     expect(content).to include("default-src 'self'")
-    expect(content).to include("script-src 'self' 'unsafe-inline' https://www.google-analytics.com https://www.googletagmanager.com")
-    expect(content).to include("style-src 'self' 'unsafe-inline'")
-    expect(content).to include("img-src 'self' data: https://www.google-analytics.com")
-    expect(content).to include("connect-src 'self' https://www.google-analytics.com")
+
+    expect(script_src).to include("'self'")
+    expect(script_src).not_to include("'unsafe-inline'")
+
+    expect(style_src).to include("'self'")
+    expect(style_src).to include("'unsafe-inline'")
+
+    expect(content).to include("img-src 'self' data:")
+    expect(content).to include("connect-src 'self'")
   end
 
   # Check a page that might use onepager if it existed, but we know onepager.html logic is updated.
