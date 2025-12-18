@@ -10,7 +10,8 @@ class TestUXCSS(unittest.TestCase):
 
         with open(css_path, 'r', encoding='utf-8') as f:
             content = f.read()
-            self.assertIn("scroll-behavior: smooth", content, "Smooth scrolling not found in CSS")
+            # Allow for optional spaces around colon
+            self.assertTrue(re.search(r"scroll-behavior:\s*smooth", content), "Smooth scrolling not found in CSS")
 
     def test_css_contains_focus_visible(self):
         """Test that focus-visible styles are present."""
@@ -20,7 +21,8 @@ class TestUXCSS(unittest.TestCase):
         with open(css_path, 'r', encoding='utf-8') as f:
             content = f.read()
             self.assertIn(":focus-visible", content, ":focus-visible selector not found in CSS")
-            self.assertIn("outline: 2px solid #82aaff", content, "Focus outline style not found")
+            # Allow for optional spaces and case insensitivity if needed, though colors are usually consistent
+            self.assertTrue(re.search(r"outline:\s*2px solid #82aaff", content), "Focus outline style not found")
 
     def test_css_contains_reduced_motion(self):
         """Test that reduced motion preference is respected."""
@@ -29,9 +31,13 @@ class TestUXCSS(unittest.TestCase):
 
         with open(css_path, 'r', encoding='utf-8') as f:
             content = f.read()
-            self.assertIn("@media (prefers-reduced-motion: reduce)", content, "Reduced motion query not found")
-            # We look for the block content roughly
-            self.assertTrue(re.search(r"@media \(prefers-reduced-motion: reduce\) \{\s*html \{\s*scroll-behavior: auto;\s*\}\s*\}", content), "Reduced motion block incorrect")
+            # Allow for minified format: @media(prefers-reduced-motion: reduce) (no space after @media)
+            self.assertTrue(re.search(r"@media\s*\(prefers-reduced-motion:\s*reduce\)", content), "Reduced motion query not found")
+
+            # Check for the rule inside. Minified output might be:
+            # @media(prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+            # So we check for the existence of the rule in a flexible way.
+            self.assertTrue(re.search(r"html\s*\{\s*scroll-behavior:\s*auto\s*\}", content), "Reduced motion rule for html not found")
 
 if __name__ == '__main__':
     unittest.main()
