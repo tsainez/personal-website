@@ -6,3 +6,5 @@ vendor
 .bundle
 __pycache__/
 *.pyc
+tests/repro/*.png
+jekyll_output.log

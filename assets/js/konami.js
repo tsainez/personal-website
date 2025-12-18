@@ -9,8 +9,15 @@ document.addEventListener('DOMContentLoaded', () => {
     'b', 'a'
   ];
   let konamiCodePosition = 0;
+  let isZeroGravityActive = false;
 
   document.addEventListener('keydown', (e) => {
+    // Exit handler
+    if (e.key === 'Escape' && isZeroGravityActive) {
+        location.reload();
+        return;
+    }
+
     const key = e.key;
     const requiredKey = konamiCode[konamiCodePosition];
 
@@ -26,19 +33,51 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function activateZeroGravity() {
+    isZeroGravityActive = true;
     console.log("🚀 Initiating Zero Gravity Mode...");
 
-    // 1. Change Background
-    document.body.style.transition = "background-color 2s ease";
-    document.body.style.backgroundColor = "#050510"; // Deep space
-    document.body.style.color = "#ffffff"; // Make text white
+    // Check for reduced motion preference
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReducedMotion) {
+        console.log("Reduced motion detected. activating static space mode.");
+    }
+
+    // 1. Change Background (always safe-ish, but instant if reduced motion)
+    if (prefersReducedMotion) {
+        document.body.style.backgroundColor = "#050510";
+        document.body.style.color = "#ffffff";
+    } else {
+        document.body.style.transition = "background-color 2s ease";
+        document.body.style.backgroundColor = "#050510"; // Deep space
+        document.body.style.color = "#ffffff"; // Make text white
+    }
 
     // Fix links to be visible in space
     const links = document.querySelectorAll('a');
     links.forEach(link => {
         link.style.color = "#66ccff";
-        link.style.transition = "color 1s";
+        if (!prefersReducedMotion) {
+            link.style.transition = "color 1s";
+        }
     });
+
+    // Stop here if reduced motion is preferred
+    if (prefersReducedMotion) {
+        // Add a small indicator that we are in space mode but static
+        const indicator = document.createElement('div');
+        indicator.innerText = "🌌 Zero Gravity (Reduced Motion Mode) - Press ESC to exit";
+        indicator.style.position = "fixed";
+        indicator.style.bottom = "10px";
+        indicator.style.right = "10px";
+        indicator.style.color = "#66ccff";
+        indicator.style.backgroundColor = "rgba(0,0,0,0.7)";
+        indicator.style.padding = "5px 10px";
+        indicator.style.borderRadius = "4px";
+        indicator.style.fontSize = "0.8rem";
+        document.body.appendChild(indicator);
+        return;
+    }
 
     // 2. Add Stars
     for (let i = 0; i < 100; i++) {
@@ -56,6 +95,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 4. Launch Rocket
     createRocket();
+
+    // 5. Add Exit Hint
+    const hint = document.createElement('div');
+    hint.innerText = "Press ESC to return to Earth";
+    hint.style.position = "fixed";
+    hint.style.bottom = "20px";
+    hint.style.left = "50%";
+    hint.style.transform = "translateX(-50%)";
+    hint.style.color = "white";
+    hint.style.opacity = "0";
+    hint.style.transition = "opacity 2s";
+    document.body.appendChild(hint);
+    setTimeout(() => { hint.style.opacity = "0.7"; }, 2000);
   }
 
   function createStar() {
