@@ -32,8 +32,8 @@ def verify_title_logic():
         return False
 
     if "escape" not in title_content:
-         print(f"WARNING: <title> tag content '{title_content}' does not seem to use 'escape' filter.")
-         # We won't fail strictly on this unless required, but it is good practice.
+         print(f"FAIL: <title> tag content '{title_content}' does not use 'escape' filter.")
+         return False
 
     print(f"SUCCESS: <title> tag logic seems correct: {title_content}")
     return True
