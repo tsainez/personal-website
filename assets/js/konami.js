@@ -40,12 +40,32 @@ document.addEventListener('DOMContentLoaded', () => {
         link.style.transition = "color 1s";
     });
 
-    // 2. Add Stars
+    // 2. Add Stars (Optimized with DocumentFragment)
+    const fragment = document.createDocumentFragment();
     for (let i = 0; i < 100; i++) {
-        createStar();
+        createStar(fragment);
+    }
+    document.body.appendChild(fragment);
+
+    // 3. Float Elements (Optimized with CSS Variables)
+    // Create shared keyframes once
+    if (!document.getElementById('zero-gravity-styles')) {
+        const style = document.createElement('style');
+        style.id = 'zero-gravity-styles';
+        style.innerHTML = `
+          @keyframes float-variable {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(var(--tx), var(--ty)) rotate(var(--rot)); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+          }
+          @keyframes twinkle {
+            0% { opacity: 0.2; }
+            100% { opacity: 1; }
+          }
+        `;
+        document.head.appendChild(style);
     }
 
-    // 3. Float Elements
     const elements = document.querySelectorAll('p, h1, h2, h3, li, span, .site-title, .page-link');
     elements.forEach(el => {
         // Only float visible elements that are not part of our effects
@@ -56,9 +76,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 4. Launch Rocket
     createRocket();
+
+    // 5. Add Exit Instructions
+    addExitInstructions();
+
+    // 6. Listen for Escape Key
+    document.addEventListener('keydown', handleEscapeKey);
   }
 
-  function createStar() {
+  function handleEscapeKey(e) {
+    if (e.key === 'Escape') {
+      window.location.reload();
+    }
+  }
+
+  function addExitInstructions() {
+    const hint = document.createElement('div');
+    hint.innerText = "Press ESC to return to Earth 🌍";
+    hint.style.position = "fixed";
+    hint.style.bottom = "20px";
+    hint.style.left = "50%";
+    hint.style.transform = "translateX(-50%)";
+    hint.style.color = "rgba(255, 255, 255, 0.8)";
+    hint.style.fontFamily = "monospace";
+    hint.style.fontSize = "14px";
+    hint.style.zIndex = "10001";
+    hint.style.padding = "10px 20px";
+    hint.style.background = "rgba(0, 0, 0, 0.5)";
+    hint.style.borderRadius = "20px";
+    hint.style.pointerEvents = "none";
+    hint.style.opacity = "0";
+    hint.style.transition = "opacity 2s ease";
+
+    document.body.appendChild(hint);
+
+    // Fade in after a delay
+    setTimeout(() => {
+        hint.style.opacity = "1";
+    }, 3000);
+  }
+
+  function createStar(container) {
     const star = document.createElement('div');
     star.classList.add('star');
     const x = Math.random() * window.innerWidth;
@@ -76,32 +134,25 @@ document.addEventListener('DOMContentLoaded', () => {
     star.style.zIndex = '-1';
     star.style.animation = `twinkle ${duration}s infinite alternate`;
 
-    document.body.appendChild(star);
+    container.appendChild(star);
   }
 
   function applyFloatAnimation(el) {
     el.style.transition = "transform 5s ease-in-out";
     el.style.display = "inline-block"; // Needed for transform to work on some inline elements
 
-    // Randomize the float pattern
-    const floatId = `float-${Math.random().toString(36).substr(2, 9)}`;
+    // Randomize the float pattern using CSS variables
     const xMove = (Math.random() - 0.5) * 50; // -25 to 25px
     const yMove = (Math.random() - 0.5) * 50;
     const rot = (Math.random() - 0.5) * 20; // -10 to 10 deg
 
-    const style = document.createElement('style');
-    style.innerHTML = `
-      @keyframes ${floatId} {
-        0% { transform: translate(0, 0) rotate(0deg); }
-        50% { transform: translate(${xMove}px, ${yMove}px) rotate(${rot}deg); }
-        100% { transform: translate(0, 0) rotate(0deg); }
-      }
-    `;
-    document.head.appendChild(style);
+    el.style.setProperty('--tx', `${xMove}px`);
+    el.style.setProperty('--ty', `${yMove}px`);
+    el.style.setProperty('--rot', `${rot}deg`);
 
     // Random delay and duration
     const duration = Math.random() * 5 + 3; // 3-8s
-    el.style.animation = `${floatId} ${duration}s ease-in-out infinite`;
+    el.style.animation = `float-variable ${duration}s ease-in-out infinite`;
   }
 
   function createRocket() {
@@ -116,16 +167,6 @@ document.addEventListener('DOMContentLoaded', () => {
     rocket.style.transition = "left 10s linear, top 10s ease-in-out";
 
     document.body.appendChild(rocket);
-
-    // Add stars twinkling animation
-    const style = document.createElement('style');
-    style.innerHTML = `
-      @keyframes twinkle {
-        0% { opacity: 0.2; }
-        100% { opacity: 1; }
-      }
-    `;
-    document.head.appendChild(style);
 
     // Animate rocket
     setTimeout(() => {

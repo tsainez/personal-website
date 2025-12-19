@@ -19,6 +19,7 @@ describe 'Content Security Policy' do
     expect(content).not_to include("'unsafe-inline'") # script-src should not have unsafe-inline
     expect(content).not_to include("https://www.google-analytics.com")
     expect(content).not_to include("https://www.googletagmanager.com")
+    expect(content).to include("script-src 'self' https://www.google-analytics.com https://www.googletagmanager.com")
     expect(content).to include("style-src 'self' 'unsafe-inline'")
     expect(content).to include("img-src 'self' data:")
     expect(content).to include("connect-src 'self'")
