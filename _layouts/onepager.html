@@ -5,8 +5,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.google-analytics.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.google-analytics.com; connect-src 'self' https://www.google-analytics.com;">
+  <!-- Note: 'unsafe-inline' removed from script-src for security. If enabling Google Analytics, this may need adjustment or a nonce. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google-analytics.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.google-analytics.com; connect-src 'self' https://www.google-analytics.com; base-uri 'self'; object-src 'none';">
   <title>{% if page.title %}{{ page.title | escape }} | {% endif %}{{ site.title | escape }}</title>
+  <!-- Performance optimization: Preload critical CSS -->
+  <link rel="preload" href="{{ '/assets/main.css' | relative_url }}" as="style">
   <link rel="stylesheet" href="{{ '/assets/main.css' | relative_url }}" />
 </head>
 <body class="onepager-body">
