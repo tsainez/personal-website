@@ -67,11 +67,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const elements = document.querySelectorAll('p, h1, h2, h3, li, span, .site-title, .page-link');
+    const visibleElements = [];
+
+    // Phase 1: Read (Batch layout checks)
+    // Checking offsetParent forces layout. We do this in a loop WITHOUT writing to DOM to avoid layout thrashing.
     elements.forEach(el => {
         // Only float visible elements that are not part of our effects
         if (el.offsetParent !== null && !el.classList.contains('star') && el.id !== 'rocket') {
-            applyFloatAnimation(el);
+            visibleElements.push(el);
         }
+    });
+
+    // Phase 2: Write (Batch style changes)
+    visibleElements.forEach(el => {
+        applyFloatAnimation(el);
     });
 
     // 4. Launch Rocket
