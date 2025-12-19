@@ -13,11 +13,12 @@
   <link rel="stylesheet" href="{{ '/assets/main.css' | relative_url }}" />
 </head>
 <body class="onepager-body">
+  <a class="skip-link" href="#main-content">Skip to main content</a>
   <div class="onepager-hero">
     <h1>{{ site.title | escape }}</h1>
     <p>{{ site.description | escape }}</p>
   </div>
-  <div class="onepager-section">
+  <div class="onepager-section" id="main-content">
     {{ content }}
   </div>
   <div class="onepager-footer">
