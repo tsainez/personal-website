@@ -5,6 +5,16 @@
   {%- include csp.html -%}
   <meta name="referrer" content="strict-origin-when-cross-origin">
   {%- seo -%}
+  <!-- Performance optimization: DNS prefetch for external links -->
+  {%- if site.github_username -%}
+  <link rel="dns-prefetch" href="https://github.com">
+  {%- endif -%}
+  {%- if site.linkedin_username -%}
+  <link rel="dns-prefetch" href="https://www.linkedin.com">
+  {%- endif -%}
+  {%- if site.twitter_username -%}
+  <link rel="dns-prefetch" href="https://twitter.com">
+  {%- endif -%}
   <!-- Performance optimization: Preload critical CSS -->
   <link rel="preload" href="{{ "/assets/main.css" | relative_url }}" as="style">
   <link rel="stylesheet" href="{{ "/assets/main.css" | relative_url }}">
