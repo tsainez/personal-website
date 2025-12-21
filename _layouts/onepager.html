@@ -5,8 +5,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- Note: 'unsafe-inline' removed from script-src for security. If enabling Google Analytics, this may need adjustment or a nonce. -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; base-uri 'self'; object-src 'none'; frame-src 'none'; form-action 'none';">
+  {%- include csp.html -%}
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>{% if page.title %}{{ page.title | escape }} | {% endif %}{{ site.title | escape }}</title>
   <!-- Performance optimization: Preload critical CSS -->
