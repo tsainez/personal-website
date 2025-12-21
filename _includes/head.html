@@ -9,6 +9,16 @@
   <!-- Performance optimization: Preload critical CSS -->
   <link rel="preload" href="{{ "/assets/main.css" | relative_url }}" as="style">
   <link rel="stylesheet" href="{{ "/assets/main.css" | relative_url }}">
+  <!-- Performance optimization: DNS prefetch for social links -->
+  {%- if site.github_username -%}
+    <link rel="dns-prefetch" href="https://github.com">
+  {%- endif -%}
+  {%- if site.linkedin_username -%}
+    <link rel="dns-prefetch" href="https://www.linkedin.com">
+  {%- endif -%}
+  {%- if site.twitter_username -%}
+    <link rel="dns-prefetch" href="https://twitter.com">
+  {%- endif -%}
   {%- feed_meta -%}
   {%- if jekyll.environment == 'production' and site.google_analytics -%}
     {%- include google-analytics.html -%}
