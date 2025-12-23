@@ -1,5 +1,3 @@
-console.log('Konami script loaded');
-
 document.addEventListener('DOMContentLoaded', () => {
   const konamiCode = [
     'ArrowUp', 'ArrowUp',
@@ -26,8 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function activateZeroGravity() {
-    console.log("🚀 Initiating Zero Gravity Mode...");
-
     // 1. Change Background
     document.body.style.transition = "background-color 2s ease";
     document.body.style.backgroundColor = "#050510"; // Deep space
