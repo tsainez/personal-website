@@ -24,17 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function activateZeroGravity() {
-    // 1. Change Background
-    document.body.style.transition = "background-color 2s ease";
-    document.body.style.backgroundColor = "#050510"; // Deep space
-    document.body.style.color = "#ffffff"; // Make text white
-
-    // Fix links to be visible in space
-    const links = document.querySelectorAll('a');
-    links.forEach(link => {
-        link.style.color = "#66ccff";
-        link.style.transition = "color 1s";
-    });
+    // 1. Activate Zero Gravity Mode
+    document.body.classList.add('zero-gravity-mode');
 
     // 2. Add Stars (Optimized with DocumentFragment)
     const fragment = document.createDocumentFragment();
