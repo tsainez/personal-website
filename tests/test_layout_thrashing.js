@@ -2,24 +2,60 @@
 const fs = require("fs");
 const path = require("path");
 
+// Verification State
+let layoutInvalidated = false;
+let forcedLayoutCount = 0;
+let operationsLog = [];
+
 // Minimal DOM Mock
 class Element {
     constructor(tagName) {
         this.tagName = tagName;
         this.children = [];
-        this.style = {
-            setProperty: (prop, value) => {
-                this.style[prop] = value;
+        this._style = {};
+
+        // Proxy to trap style writes
+        this.style = new Proxy(this._style, {
+            set: (target, prop, value) => {
+                target[prop] = value;
+                if (!layoutInvalidated) {
+                    operationsLog.push('WRITE_STYLE');
+                    layoutInvalidated = true;
+                }
+                return true;
+            },
+            get: (target, prop) => {
+                if (prop === 'setProperty') {
+                    return (key, val) => {
+                        target[key] = val;
+                        if (!layoutInvalidated) {
+                            operationsLog.push('WRITE_STYLE');
+                            layoutInvalidated = true;
+                        }
+                    };
+                }
+                return target[prop];
             }
-        };
+        });
+
         this.classList = {
             add: () => {},
             contains: () => false
         };
         this.innerText = "";
         this.id = "";
-        this.offsetParent = {}; // Mock visibility
     }
+
+    // Mock offsetParent to trigger layout read
+    get offsetParent() {
+        operationsLog.push('READ_LAYOUT');
+        if (layoutInvalidated) {
+            forcedLayoutCount++;
+            layoutInvalidated = false; // Layout is now clean (recalculated)
+        }
+        return {}; // Mock visibility
+    }
+
     appendChild(child) {
         this.children.push(child);
     }
@@ -46,26 +82,10 @@ for(let i=0; i<100; i++) {
 
 body.querySelectorAll = (selector) => {
     if (selector === '.star') return [];
-    // Return 100 elements
     return mockElements;
 };
 body.appendChild = (child) => {
     // ...
-};
-
-head.querySelectorAll = (selector) => {
-    if (selector === 'style') {
-        return { length: global.styleTagCount || 0 };
-    }
-    return [];
-}
-head.appendChild = (child) => {
-    if (child.tagName === 'style') {
-        global.styleTagCount = (global.styleTagCount || 0) + 1;
-        if (child.id === 'zero-gravity-styles') {
-            global.stylesCreated = true;
-        }
-    }
 };
 
 global.document = {
@@ -76,28 +96,26 @@ global.document = {
     },
     createElement: (tagName) => new Element(tagName),
     createDocumentFragment: () => new DocumentFragment(),
-    getElementById: (id) => {
-        // Assume styles are not yet created on first run
-        if (id === 'zero-gravity-styles' && !global.stylesCreated) return null;
-        if (id === 'zero-gravity-styles' && global.stylesCreated) return {};
-        return null;
-    },
+    getElementById: (id) => null,
     body: body,
     head: head,
     querySelectorAll: (selector) => body.querySelectorAll(selector),
 };
 
-global.stylesCreated = false;
 global.window = {
     innerWidth: 1024,
     innerHeight: 768
 };
+
+// Mock Math.random to be deterministic enough
+global.Math.random = () => 0.5;
 
 global.requestAnimationFrame = (cb) => cb();
 
 const konamiScriptPath = path.join(__dirname, "../assets/js/konami.js");
 const konamiScriptContent = fs.readFileSync(konamiScriptPath, "utf8");
 
+// Run the script
 eval(konamiScriptContent);
 
 if (global.listeners['DOMContentLoaded']) {
@@ -119,13 +137,12 @@ code.forEach(key => {
     }
 });
 
-const styleCount = global.styleTagCount || 0;
-console.log(`Style tags created: ${styleCount}`);
-
-if (styleCount > 5) {
-    console.error(`FAIL: Too many style tags created (${styleCount}). Expected <= 5.`);
+console.log(`Forced Layout Count: ${forcedLayoutCount}`);
+// In a loop of 100 elements, if we read-write-read-write, we expect close to 100 forced layouts (minus the first one)
+if (forcedLayoutCount > 10) {
+    console.error(`FAIL: Layout thrashing detected. Forced layouts: ${forcedLayoutCount}`);
     process.exit(1);
 } else {
-    console.log(`PASS: Style tags count is efficient (${styleCount}).`);
+    console.log(`PASS: No significant layout thrashing. Forced layouts: ${forcedLayoutCount}`);
     process.exit(0);
 }

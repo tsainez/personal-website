@@ -63,11 +63,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const elements = document.querySelectorAll('p, h1, h2, h3, li, span, .site-title, .page-link');
+
+    // Performance Optimization: Batch DOM reads and writes to prevent layout thrashing
+    const visibleElements = [];
+
+    // READ PHASE: Identify elements to animate without modifying styles
     elements.forEach(el => {
-        // Only float visible elements that are not part of our effects
         if (el.offsetParent !== null && !el.classList.contains('star') && el.id !== 'rocket') {
-            applyFloatAnimation(el);
+            visibleElements.push(el);
         }
+    });
+
+    // WRITE PHASE: Apply animations to collected elements
+    visibleElements.forEach(el => {
+        applyFloatAnimation(el);
     });
 
     // 4. Launch Rocket
