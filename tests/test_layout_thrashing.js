@@ -102,9 +102,22 @@ global.document = {
     querySelectorAll: (selector) => body.querySelectorAll(selector),
 };
 
+// Mock window with layout-triggering properties
 global.window = {
-    innerWidth: 1024,
-    innerHeight: 768
+    get innerWidth() {
+        if (layoutInvalidated) {
+            forcedLayoutCount++;
+            layoutInvalidated = false;
+        }
+        return 1024;
+    },
+    get innerHeight() {
+        if (layoutInvalidated) {
+            forcedLayoutCount++;
+            layoutInvalidated = false;
+        }
+        return 768;
+    }
 };
 
 // Mock Math.random to be deterministic enough
