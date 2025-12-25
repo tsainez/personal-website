@@ -44,23 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.appendChild(fragment);
 
     // 3. Float Elements (Optimized with CSS Variables)
-    // Create shared keyframes once
-    if (!document.getElementById('zero-gravity-styles')) {
-        const style = document.createElement('style');
-        style.id = 'zero-gravity-styles';
-        style.innerHTML = `
-          @keyframes float-variable {
-            0% { transform: translate(0, 0) rotate(0deg); }
-            50% { transform: translate(var(--tx), var(--ty)) rotate(var(--rot)); }
-            100% { transform: translate(0, 0) rotate(0deg); }
-          }
-          @keyframes twinkle {
-            0% { opacity: 0.2; }
-            100% { opacity: 1; }
-          }
-        `;
-        document.head.appendChild(style);
-    }
+    // Removed style injection here for CSP compliance (unsafe-inline).
+    // Keyframes 'float-variable' and 'twinkle' are now in assets/main.scss
 
     const elements = document.querySelectorAll('p, h1, h2, h3, li, span, .site-title, .page-link');
 
@@ -98,26 +83,14 @@ document.addEventListener('DOMContentLoaded', () => {
   function addExitInstructions() {
     const hint = document.createElement('div');
     hint.innerText = "Press ESC to return to Earth 🌍";
-    hint.style.position = "fixed";
-    hint.style.bottom = "20px";
-    hint.style.left = "50%";
-    hint.style.transform = "translateX(-50%)";
-    hint.style.color = "rgba(255, 255, 255, 0.8)";
-    hint.style.fontFamily = "monospace";
-    hint.style.fontSize = "14px";
-    hint.style.zIndex = "10001";
-    hint.style.padding = "10px 20px";
-    hint.style.background = "rgba(0, 0, 0, 0.5)";
-    hint.style.borderRadius = "20px";
-    hint.style.pointerEvents = "none";
-    hint.style.opacity = "0";
-    hint.style.transition = "opacity 2s ease";
+    // Using class instead of inline styles for CSP and maintainability
+    hint.classList.add('zero-gravity-hint');
 
     document.body.appendChild(hint);
 
     // Fade in after a delay
     setTimeout(() => {
-        hint.style.opacity = "1";
+        hint.classList.add('visible');
     }, 3000);
   }
 
@@ -164,12 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const rocket = document.createElement('div');
     rocket.innerText = "🚀";
     rocket.id = "rocket";
-    rocket.style.position = "fixed";
-    rocket.style.fontSize = "50px";
-    rocket.style.zIndex = "10000";
-    rocket.style.left = "-100px";
-    rocket.style.top = "50%";
-    rocket.style.transition = "left 10s linear, top 10s ease-in-out";
+    // Using class for initial state
+    rocket.classList.add('zero-gravity-rocket');
 
     document.body.appendChild(rocket);
 

@@ -116,3 +116,46 @@ html {
   // options: base16-dark, dracula, monokai, nord, gruvbox-dark
   @import "dracula";
 }
+
+/* Konami Code / Zero Gravity Animations */
+/* Moved from inline JS for strict CSP */
+@keyframes float-variable {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(var(--tx), var(--ty)) rotate(var(--rot)); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+@keyframes twinkle {
+  0% { opacity: 0.2; }
+  100% { opacity: 1; }
+}
+
+.zero-gravity-hint {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.8);
+  font-family: monospace;
+  font-size: 14px;
+  z-index: 10001;
+  padding: 10px 20px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 20px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 2s ease;
+
+  &.visible {
+    opacity: 1;
+  }
+}
+
+.zero-gravity-rocket {
+  position: fixed;
+  font-size: 50px;
+  z-index: 10000;
+  left: -100px;
+  top: 50%;
+  transition: left 10s linear, top 10s ease-in-out;
+}
