@@ -38,8 +38,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 2. Add Stars (Optimized with DocumentFragment)
     const fragment = document.createDocumentFragment();
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
     for (let i = 0; i < 100; i++) {
-        createStar(fragment);
+        createStar(fragment, viewportWidth, viewportHeight);
     }
     document.body.appendChild(fragment);
 
@@ -121,11 +123,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 3000);
   }
 
-  function createStar(container) {
+  function createStar(container, viewportWidth, viewportHeight) {
     const star = document.createElement('div');
     star.classList.add('star');
-    const x = Math.random() * window.innerWidth;
-    const y = Math.random() * window.innerHeight;
+    const x = Math.random() * viewportWidth;
+    const y = Math.random() * viewportHeight;
     const size = Math.random() * 3;
     const duration = Math.random() * 3 + 1;
 
