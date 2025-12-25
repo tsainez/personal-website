@@ -6,6 +6,28 @@
 /* UX Enhancements */
 $focus-color: #82aaff;
 
+/* Skip to content link - visually hidden but accessible */
+.skip-link {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  background: #000;
+  color: #fff;
+  padding: 8px 16px;
+  z-index: 100;
+  text-decoration: none;
+  font-weight: bold;
+
+  &:focus {
+    top: 0;
+    left: 0;
+    width: auto;
+    height: auto;
+    /* Using CSS clip pattern to hide it visually but keep it accessible */
+    clip: auto;
+  }
+}
+
 html {
   scroll-behavior: smooth;
 }
