@@ -59,6 +59,10 @@ class Element {
     appendChild(child) {
         this.children.push(child);
     }
+
+    closest(selector) {
+        return null;
+    }
 }
 
 // Mock document.createDocumentFragment
