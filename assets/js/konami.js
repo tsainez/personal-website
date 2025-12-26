@@ -56,7 +56,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // READ PHASE: Identify elements to animate without modifying styles
     elements.forEach(el => {
-        if (el.offsetParent !== null && !el.classList.contains('star') && el.id !== 'rocket') {
+        // Performance: Exclude elements inside code blocks (pre, code) to prevent animating thousands of syntax-highlighted tokens
+        if (el.offsetParent !== null && !el.classList.contains('star') && el.id !== 'rocket' && !el.closest('pre') && !el.closest('code')) {
             visibleElements.push(el);
         }
     });
