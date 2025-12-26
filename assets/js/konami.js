@@ -84,6 +84,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function addExitInstructions() {
     const hint = document.createElement('div');
+    hint.setAttribute('role', 'status');
+    hint.setAttribute('aria-live', 'polite');
     hint.innerText = "Press ESC to return to Earth 🌍";
     // Using class instead of inline styles for CSP and maintainability
     hint.classList.add('zero-gravity-hint');
@@ -139,6 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const rocket = document.createElement('div');
     rocket.innerText = "🚀";
     rocket.id = "rocket";
+    rocket.setAttribute('aria-hidden', 'true');
     // Using class for initial state
     rocket.classList.add('zero-gravity-rocket');
 
