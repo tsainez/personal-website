@@ -258,3 +258,15 @@ html {
     letter-spacing: -1px;
   }
 }
+
+/* Zero Gravity Mode */
+.zero-gravity-mode {
+  background-color: #050510 !important;
+  color: #ffffff !important;
+  transition: background-color 2s ease;
+
+  a {
+    color: #66ccff !important;
+    transition: color 1s;
+  }
+}
