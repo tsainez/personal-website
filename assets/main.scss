@@ -269,3 +269,21 @@ html {
     letter-spacing: -1px;
   }
 }
+
+/* Post Navigation */
+.post-navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e8e8e8;
+
+  @media (prefers-color-scheme: dark) {
+    border-top-color: #333;
+  }
+
+  .nav-next {
+    margin-left: auto;
+    text-align: right;
+  }
+}

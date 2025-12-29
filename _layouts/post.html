@@ -32,4 +32,21 @@ layout: default
   {%- endif -%}
 
   <a class="u-url" href="{{ page.url | relative_url }}" hidden></a>
+
+  <div class="post-navigation">
+    {% if page.previous.url %}
+      <div class="nav-previous">
+        <a href="{{ page.previous.url | relative_url }}" rel="prev">
+          &laquo; {{ page.previous.title | escape }}
+        </a>
+      </div>
+    {% endif %}
+    {% if page.next.url %}
+      <div class="nav-next">
+        <a href="{{ page.next.url | relative_url }}" rel="next">
+          {{ page.next.title | escape }} &raquo;
+        </a>
+      </div>
+    {% endif %}
+  </div>
 </article>
