@@ -2,108 +2,108 @@
 const fs = require("fs");
 const path = require("path");
 
-// Minimal DOM Mock
+// Mock Element to test class/id checks
 class Element {
-    constructor(tagName) {
+    constructor(tagName, id, className) {
         this.tagName = tagName;
-        this.classList = {
-            _classes: [],
-            add: () => {},
-            contains: (cls) => this.classList._classes.includes(cls),
-        };
+        this.id = id || "";
+        this.className = className || "";
         this.children = [];
         this.style = {
             setProperty: () => {},
-            transition: "",
+            animation: "",
             display: ""
         };
-        this.parentNode = null;
-        this.id = "";
+        this.attributes = {};
     }
 
-    // Helper for setup
-    addClass(cls) {
-        this.classList._classes.push(cls);
+    setAttribute(name, value) {
+        this.attributes[name] = value;
     }
 
-    appendChild(child) {
-        child.parentNode = this;
-        this.children.push(child);
+    getAttribute(name) {
+        return this.attributes[name];
     }
 
-    // Mock offsetParent to simulate visibility
+    get classList() {
+        return {
+            add: (cls) => this.className += " " + cls,
+            contains: (cls) => this.className.includes(cls),
+            remove: (cls) => this.className = this.className.replace(cls, "")
+        };
+    }
+
     get offsetParent() {
-        return {}; // Always visible
+        return {}; // Mock visibility
     }
 
     closest(selector) {
-        if (selector === 'pre' && this.tagName === 'span' && this.parentNode && this.parentNode.parentNode && this.parentNode.parentNode.tagName === 'pre') {
-            return this.parentNode.parentNode;
-        }
-        if (selector === 'code' && this.tagName === 'span' && this.parentNode && this.parentNode.tagName === 'code') {
-            return this.parentNode;
-        }
+        // Mock simple closest logic
+        if (selector === 'pre' && this.className.includes('in-pre')) return true;
+        if (selector === 'code' && this.className.includes('in-code')) return true;
         return null;
+    }
+
+    appendChild(child) {
+        this.children.push(child);
+    }
+}
+
+// Mock document.createDocumentFragment
+class DocumentFragment {
+    constructor() {
+        this.children = [];
+    }
+    appendChild(child) {
+        this.children.push(child);
     }
 }
 
 const body = new Element('body');
-const pre = new Element('pre');
-const code = new Element('code');
-pre.appendChild(code);
-body.appendChild(pre);
 
-// Create 1000 spans inside code block (simulating syntax highlighting)
-for(let i=0; i<1000; i++) {
-    const span = new Element('span');
-    span.addClass('token');
-    code.appendChild(span);
+const mockElements = [];
+// Create 1000 spans that act as code tokens (inside pre/code)
+for (let i = 0; i < 1000; i++) {
+    const span = new Element('span', '', 'in-pre in-code');
+    mockElements.push(span);
+}
+// Create 10 normal elements
+for (let i = 0; i < 10; i++) {
+    mockElements.push(new Element('p'));
 }
 
-// Create some normal content
-const p = new Element('p');
-body.appendChild(p);
-
-
 global.document = {
-    addEventListener: () => {},
-    createElement: (tagName) => new Element(tagName),
-    createDocumentFragment: () => ({ appendChild: () => {} }),
-    body: body,
-    querySelectorAll: (selector) => {
-        const results = [];
-        const recurse = (node) => {
-            if (node.tagName === 'span' || node.tagName === 'p') results.push(node);
-            if (node.children) node.children.forEach(recurse);
-        };
-        recurse(body);
-        return results;
+    addEventListener: (event, cb) => {
+        if (!global.listeners) global.listeners = {};
+        if (!global.listeners[event]) global.listeners[event] = [];
+        global.listeners[event].push(cb);
     },
+    createElement: (tagName) => new Element(tagName),
+    createDocumentFragment: () => new DocumentFragment(),
+    querySelectorAll: (selector) => mockElements,
+    body: body
 };
 
 global.window = {
-    innerWidth: 1000,
-    innerHeight: 1000
+    innerWidth: 1024,
+    innerHeight: 768,
+    location: { reload: () => {} }
 };
+
+global.Math.random = () => 0.5;
 
 const konamiScriptPath = path.join(__dirname, "../assets/js/konami.js");
 const konamiScriptContent = fs.readFileSync(konamiScriptPath, "utf8");
 
-// Override addEventListener to capture the callback
-const listeners = {};
-global.document.addEventListener = (event, cb) => {
-    listeners[event] = cb;
-};
-
-// Run script
+// Run the script
 eval(konamiScriptContent);
 
-// Trigger DOMContentLoaded
-if (listeners['DOMContentLoaded']) {
-    listeners['DOMContentLoaded']();
+if (global.listeners['DOMContentLoaded']) {
+    global.listeners['DOMContentLoaded'].forEach(cb => cb());
 }
 
-const codeSeq = [
+// Trigger Konami Code
+const code = [
     'ArrowUp', 'ArrowUp',
     'ArrowDown', 'ArrowDown',
     'ArrowLeft', 'ArrowRight',
@@ -111,21 +111,17 @@ const codeSeq = [
     'b', 'a'
 ];
 
-// We'll attach a spy to the elements we created
-const spans = code.children; // 1000 spans
-let spansAnimated = 0;
-
-spans.forEach(span => {
-    // Override the style object's setProperty method for counting
-    span.style.setProperty = () => {
-        spansAnimated++;
-    };
+code.forEach(key => {
+    if (global.listeners['keydown']) {
+        global.listeners['keydown'].forEach(cb => cb({ key }));
+    }
 });
 
-// Trigger Konami Code
-codeSeq.forEach(key => {
-    if (listeners['keydown']) {
-        listeners['keydown']({ key });
+// Verify that none of the 1000 code spans have animations
+let spansAnimated = 0;
+mockElements.forEach(el => {
+    if (el.className.includes('in-pre') && el.style.animation) {
+        spansAnimated++;
     }
 });
 
@@ -134,6 +130,8 @@ console.log(`Spans animated: ${spansAnimated}`);
 
 if (spansAnimated > 0) {
     console.log("FAIL: Syntax highlighted code tokens are being animated!");
+    process.exit(1);
 } else {
     console.log("PASS: Code tokens are ignored.");
+    process.exit(0);
 }

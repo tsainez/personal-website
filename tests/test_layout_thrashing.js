@@ -40,10 +40,20 @@ class Element {
 
         this.classList = {
             add: () => {},
-            contains: () => false
+            contains: () => false,
+            remove: () => {}
         };
         this.innerText = "";
         this.id = "";
+        this.attributes = {};
+    }
+
+    setAttribute(name, value) {
+        this.attributes[name] = value;
+    }
+
+    getAttribute(name) {
+        return this.attributes[name];
     }
 
     // Mock offsetParent to trigger layout read
