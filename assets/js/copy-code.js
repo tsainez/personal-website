@@ -13,27 +13,38 @@ document.addEventListener('DOMContentLoaded', () => {
     button.innerText = 'Copy';
 
     block.appendChild(button);
+  });
 
-    button.addEventListener('click', async () => {
-      // Find the code element inside the block
-      const code = block.querySelector('code');
-      const text = code ? code.innerText : '';
+  // Performance Optimization: Event Delegation
+  // Instead of attaching a listener to every button (O(N)), we attach one global listener (O(1)).
+  document.addEventListener('click', async (e) => {
+    const button = e.target.closest('.copy-code-button');
+    if (!button) return;
 
-      try {
-        await navigator.clipboard.writeText(text);
+    const block = button.closest('div.highlight, figure.highlight');
+    if (!block) return;
 
-        // Feedback
-        button.innerText = 'Copied!';
-        button.classList.add('copied');
+    const code = block.querySelector('code');
+    const text = code ? code.innerText : '';
 
-        setTimeout(() => {
-          button.innerText = 'Copy';
-          button.classList.remove('copied');
-        }, 2000);
-      } catch (err) {
-        console.error('Failed to copy:', err);
-        button.innerText = 'Error';
-      }
-    });
+    try {
+      await navigator.clipboard.writeText(text);
+
+      // Feedback
+      button.innerText = 'Copied!';
+      button.classList.add('copied');
+
+      // Clear any existing timeout to prevent flickering if clicked rapidly
+      if (button._timeoutId) clearTimeout(button._timeoutId);
+
+      button._timeoutId = setTimeout(() => {
+        button.innerText = 'Copy';
+        button.classList.remove('copied');
+        delete button._timeoutId;
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+      button.innerText = 'Error';
+    }
   });
 });
