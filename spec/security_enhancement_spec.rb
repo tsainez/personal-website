@@ -28,4 +28,14 @@ describe 'Security Enhancements' do
       expect(content).to match(/^Canonical: https:\/\/tonysainez\.com\/.well-known\/security\.txt/), "security.txt is missing Canonical field"
     end
   end
+
+  describe 'Frame Busting' do
+    it 'should include security.js in head' do
+      Dir.glob(File.join(site_dir, '**', '*.html')).each do |file_path|
+        doc = Nokogiri::HTML(File.read(file_path))
+        script = doc.css('head script[src*="security.js"]')
+        expect(script).not_to be_empty, "security.js not found in head of #{file_path}"
+      end
+    end
+  end
 end
