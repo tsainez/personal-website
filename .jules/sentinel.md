@@ -12,3 +12,8 @@
 **Vulnerability:** Missing `security.txt` file means security researchers have no standard way to report vulnerabilities.
 **Learning:** Even static sites (Jekyll) need a vulnerability disclosure policy. In Jekyll, dotfiles/folders like `.well-known` are excluded by default and must be explicitly added to `include` in `_config.yml`.
 **Prevention:** Always check if standard security paths (`.well-known`) are included in the build output for static site generators.
+
+## 2025-10-27 - [Clickjacking Protection on Static Sites]
+**Vulnerability:** GitHub Pages does not support `X-Frame-Options` or `Content-Security-Policy: frame-ancestors` headers, leaving the site vulnerable to Clickjacking.
+**Learning:** Security headers that prevent framing cannot be set via `<meta>` tags (specifically `frame-ancestors`). The only viable mitigation for static hosting without header control is JavaScript-based "Frame Busting".
+**Prevention:** Implemented `security.js` with a frame-busting script and included it in `<head>`. This is an imperfect but necessary workaround for this environment.
