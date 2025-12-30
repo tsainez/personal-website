@@ -79,6 +79,44 @@ html {
   background: #fafafa;
 }
 
+/* Back to Top Button */
+.back-to-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background-color: $focus-color;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 3rem;
+  height: 3rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s, background-color 0.3s;
+  z-index: 99;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+
+  &:hover {
+    background-color: darken($focus-color, 10%);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: -4px;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  &.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
 /* Dark mode styles */
 @media (prefers-color-scheme: dark) {
   body {
@@ -135,6 +173,17 @@ html {
     background-color: #2d2d2d;
     color: #e0e0e0;
   }
+
+  .back-to-top {
+    background-color: #333;
+    color: #e0e0e0;
+    border: 1px solid #555;
+
+    &:hover {
+      background-color: #444;
+    }
+  }
+
   // options: base16-dark, dracula, monokai, nord, gruvbox-dark
   @import "dracula";
 }
