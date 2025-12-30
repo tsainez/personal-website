@@ -24,38 +24,40 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function activateZeroGravity() {
-    // 1. Change Background (Optimized: Toggle Class)
-    document.body.classList.add('zero-gravity-mode');
+    // --- READ PHASE: Collect all necessary information BEFORE modifying the DOM ---
 
-    // 2. Add Stars (Optimized with DocumentFragment)
-    const fragment = document.createDocumentFragment();
+    // 1. Read Viewport Dimensions (Forces layout if dirty, but clean here)
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
-    for (let i = 0; i < 100; i++) {
-        createStar(fragment, viewportWidth, viewportHeight);
-    }
-    document.body.appendChild(fragment);
 
-    // 3. Float Elements (Optimized with CSS Variables)
-    // Removed style injection here for CSP compliance (unsafe-inline).
-    // Keyframes 'float-variable' and 'twinkle' are now in assets/main.scss
-
+    // 2. Identify elements to animate
     const elements = document.querySelectorAll('p, h1, h2, h3, li, span, .site-title, .page-link');
-
-    // Performance Optimization: Batch DOM reads and writes to prevent layout thrashing
     const visibleElements = [];
 
-    // READ PHASE: Identify elements to animate without modifying styles
     elements.forEach(el => {
-        // Performance: Exclude elements inside code blocks (pre, code) to prevent animating thousands of syntax-highlighted tokens
+        // Performance: Exclude elements inside code blocks (pre, code)
+        // Accessing el.offsetParent checks layout. Since we haven't written yet, this is fast/cached.
         if (el.offsetParent !== null && !el.classList.contains('star') && el.id !== 'rocket' && !el.closest('pre') && !el.closest('code')) {
             visibleElements.push(el);
         }
     });
 
-    // WRITE PHASE: Apply animations to collected elements
+    // --- WRITE PHASE: Modify DOM and Styles ---
+
+    // 1. Change Background (Optimized: Toggle Class)
+    document.body.classList.add('zero-gravity-mode'); // INVALIDATES LAYOUT
+
+    // 2. Add Stars (Optimized with DocumentFragment)
+    const fragment = document.createDocumentFragment();
+    for (let i = 0; i < 100; i++) {
+        createStar(fragment, viewportWidth, viewportHeight);
+    }
+    document.body.appendChild(fragment); // INVALIDATES LAYOUT
+
+    // 3. Float Elements (Optimized with CSS Variables)
+    // Keyframes 'float-variable' and 'twinkle' are in assets/main.scss
     visibleElements.forEach(el => {
-        applyFloatAnimation(el);
+        applyFloatAnimation(el); // WRITE ONLY (No layout reads)
     });
 
     // 4. Launch Rocket
