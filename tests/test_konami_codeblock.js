@@ -80,7 +80,15 @@ global.document = {
     },
     createElement: (tagName) => new Element(tagName),
     createDocumentFragment: () => new DocumentFragment(),
-    querySelectorAll: (selector) => mockElements,
+    querySelectorAll: (selector) => {
+        // Mock querySelectorAll behavior for :not(code) > span
+        if (selector.includes(':not(code) > span')) {
+            // Filter out elements that are "in-code" (mocked via class)
+            // In a real browser this is done by CSS engine. Here we simulate it.
+            return mockElements.filter(el => !el.className.includes('in-code'));
+        }
+        return mockElements;
+    },
     body: body
 };
 
