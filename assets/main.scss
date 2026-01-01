@@ -305,6 +305,14 @@ html {
   transition: left 10s linear, top 10s ease-in-out;
 }
 
+/* Optimized Star Styles */
+.star {
+  position: fixed;
+  background-color: white;
+  border-radius: 50%;
+  z-index: -1;
+}
+
 /* 404 Page Styles - Moved from inline style for CSP compliance */
 .fourofour-container {
   margin: 10px auto;
