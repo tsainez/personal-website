@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+(function() {
   const backToTopButton = document.getElementById('back-to-top');
 
   if (!backToTopButton) return;
@@ -30,4 +30,4 @@ document.addEventListener('DOMContentLoaded', () => {
     // Move focus back to the top of the document for accessibility
     document.body.focus();
   });
-});
+})();
