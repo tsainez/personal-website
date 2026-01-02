@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+(function() {
   const konamiCode = [
     'ArrowUp', 'ArrowUp',
     'ArrowDown', 'ArrowDown',
@@ -147,4 +147,4 @@ document.addEventListener('DOMContentLoaded', () => {
         rocket.style.top = "20%";
     }, 100);
   }
-});
+})();

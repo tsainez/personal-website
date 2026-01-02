@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+(function() {
   // Target only the wrapper divs (or figures) to avoid selecting the inner 'pre.highlight'
   const codeBlocks = document.querySelectorAll('div.highlight, figure.highlight');
 
@@ -47,4 +47,4 @@ document.addEventListener('DOMContentLoaded', () => {
       button.innerText = 'Error';
     }
   });
-});
+})();
