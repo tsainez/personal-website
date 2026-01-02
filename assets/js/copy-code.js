@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Feedback
       button.innerText = 'Copied!';
+      button.ariaLabel = 'Copied successfully';
       button.classList.add('copied');
 
       // Clear any existing timeout to prevent flickering if clicked rapidly
@@ -39,6 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       button._timeoutId = setTimeout(() => {
         button.innerText = 'Copy';
+        button.ariaLabel = 'Copy code to clipboard';
         button.classList.remove('copied');
         delete button._timeoutId;
       }, 2000);
