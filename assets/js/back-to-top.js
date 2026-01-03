@@ -28,6 +28,12 @@ document.addEventListener('DOMContentLoaded', () => {
       behavior: 'smooth'
     });
     // Move focus back to the top of the document for accessibility
+    document.body.setAttribute('tabindex', '-1');
     document.body.focus();
+
+    // Clean up tabindex on blur
+    document.body.addEventListener('blur', () => {
+      document.body.removeAttribute('tabindex');
+    }, { once: true });
   });
 });
