@@ -31,12 +31,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const viewportHeight = window.innerHeight;
 
     // 2. Identify elements to animate
-    const elements = document.querySelectorAll('p, h1, h2, h3, li, span, .site-title, .page-link');
+    // Performance Optimization: Use :not() selector to exclude syntax highlighting spans natively
+    // This avoids iterating over thousands of syntax tokens in JS and performing DOM traversal on each.
+    const elements = document.querySelectorAll('p, h1, h2, h3, li, :not(pre):not(code) > span, .site-title, .page-link');
     const visibleElements = [];
 
     elements.forEach(el => {
         // Performance: Exclude elements inside code blocks (pre, code)
         // Accessing el.offsetParent checks layout. Since we haven't written yet, this is fast/cached.
+        // Note: The selector above already filters most spans inside code, but we keep the check for safety
+        // (e.g. for p tags inside code, or other edge cases).
         if (el.offsetParent !== null && !el.classList.contains('star') && el.id !== 'rocket' && !el.closest('pre') && !el.closest('code')) {
             visibleElements.push(el);
         }
