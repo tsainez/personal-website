@@ -5,13 +5,31 @@
  */
 (function() {
   if (window.self !== window.top) {
+    // 🛡️ Sentinel: Immediate Protection
+    // Hide the content immediately to prevent interaction if the site is framed.
+    // This protects against attacks where frame busting is blocked (e.g., sandboxed iframe).
+    document.documentElement.style.display = 'none';
+
     try {
-      // Attempt to break out of the frame
-      window.top.location = window.self.location;
+      if (window.top.location.hostname !== window.self.location.hostname) {
+        // Attempt to break out of the frame
+        window.top.location = window.self.location;
+      } else {
+        // Allow same-origin framing (optional, but safer to default to busting)
+        // For strict security, we still break out:
+        window.top.location = window.self.location;
+      }
     } catch (e) {
-      // If SOP blocks access to window.top (e.g., cross-origin), we can't break out easily.
-      // But we can log a warning or take other actions if needed.
-      console.warn('Sentinel: Failed to break frame. Site is likely running in a sandboxed iframe.');
+      // If SOP blocks access to window.top (e.g., cross-origin) or sandbox blocks navigation:
+      // Keep the content hidden.
+      console.warn('Sentinel: Anti-clickjacking protection activated. Content hidden.');
+
+      // Double down on hiding
+      // We can also remove the body content to be sure.
+      document.addEventListener('DOMContentLoaded', function() {
+        document.body.innerHTML = '<h1>Access Denied</h1><p>This content cannot be displayed in a frame.</p>';
+        document.documentElement.style.display = 'block'; // Show the error message
+      });
     }
   }
 })();
