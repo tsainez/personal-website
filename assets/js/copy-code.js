@@ -1,8 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // Target only the wrapper divs (or figures) to avoid selecting the inner 'pre.highlight'
   const codeBlocks = document.querySelectorAll('div.highlight, figure.highlight');
 
-  codeBlocks.forEach((block) => {
+  const createCopyButton = (block) => {
     // Check if button already exists to prevent duplicates
     if (block.querySelector('.copy-code-button')) return;
 
@@ -13,7 +12,28 @@ document.addEventListener('DOMContentLoaded', () => {
     button.innerText = 'Copy';
 
     block.appendChild(button);
-  });
+  };
+
+  // Performance Optimization: Intersection Observer
+  // Only create buttons when code blocks are approaching the viewport.
+  // This reduces initial DOM nodes and main thread blocking time on pages with many code blocks.
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          createCopyButton(entry.target);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: '200px 0px' }); // Load buttons shortly before they appear
+
+    codeBlocks.forEach((block) => {
+      observer.observe(block);
+    });
+  } else {
+    // Fallback for older browsers
+    codeBlocks.forEach(createCopyButton);
+  }
 
   // Performance Optimization: Event Delegation
   // Instead of attaching a listener to every button (O(N)), we attach one global listener (O(1)).
