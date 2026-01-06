@@ -1,19 +1,38 @@
 (function() {
-  // Target only the wrapper divs (or figures) to avoid selecting the inner 'pre.highlight'
-  const codeBlocks = document.querySelectorAll('div.highlight, figure.highlight');
+  const addCopyButton = (block) => {
+      // Check if button already exists to prevent duplicates
+      if (block.querySelector('.copy-code-button')) return;
 
-  codeBlocks.forEach((block) => {
-    // Check if button already exists to prevent duplicates
-    if (block.querySelector('.copy-code-button')) return;
+      const button = document.createElement('button');
+      button.className = 'copy-code-button';
+      button.type = 'button';
+      button.ariaLabel = 'Copy code to clipboard';
+      button.innerText = 'Copy';
 
-    const button = document.createElement('button');
-    button.className = 'copy-code-button';
-    button.type = 'button';
-    button.ariaLabel = 'Copy code to clipboard';
-    button.innerText = 'Copy';
+      block.appendChild(button);
+  };
 
-    block.appendChild(button);
-  });
+  // Performance Optimization: Use IntersectionObserver to lazy-load copy buttons
+  // This reduces initial DOM manipulation and improves TTI on pages with many code blocks.
+  if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                  addCopyButton(entry.target);
+                  observer.unobserve(entry.target);
+              }
+          });
+      }, {
+          rootMargin: '200px' // Load buttons slightly before they come into view
+      });
+
+      const codeBlocks = document.querySelectorAll('div.highlight, figure.highlight');
+      codeBlocks.forEach(block => observer.observe(block));
+  } else {
+      // Fallback for older browsers
+      const codeBlocks = document.querySelectorAll('div.highlight, figure.highlight');
+      codeBlocks.forEach(addCopyButton);
+  }
 
   // Performance Optimization: Event Delegation
   // Instead of attaching a listener to every button (O(N)), we attach one global listener (O(1)).
