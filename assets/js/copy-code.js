@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+(function() {
   // Target only the wrapper divs (or figures) to avoid selecting the inner 'pre.highlight'
   const codeBlocks = document.querySelectorAll('div.highlight, figure.highlight');
 
@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Feedback
       button.innerText = 'Copied!';
+      button.ariaLabel = 'Copied successfully';
       button.classList.add('copied');
 
       // Clear any existing timeout to prevent flickering if clicked rapidly
@@ -39,6 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       button._timeoutId = setTimeout(() => {
         button.innerText = 'Copy';
+        button.ariaLabel = 'Copy code to clipboard';
         button.classList.remove('copied');
         delete button._timeoutId;
       }, 2000);
@@ -47,4 +49,4 @@ document.addEventListener('DOMContentLoaded', () => {
       button.innerText = 'Error';
     }
   });
-});
+})();
