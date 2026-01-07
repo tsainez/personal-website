@@ -55,6 +55,11 @@ exclude:
   - vendor/gems/
   - vendor/ruby/
   - tests/
+  - spec/
+  - package.json
+  - package-lock.json
+  - Rakefile
+  - README.md
 
 include:
   - .well-known
