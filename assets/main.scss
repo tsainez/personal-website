@@ -336,3 +336,72 @@ html {
     text-align: right;
   }
 }
+
+/* Anchor Links */
+.anchor-link {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 0.5rem;
+  color: #a0a0a0;
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.2s, color 0.2s;
+  vertical-align: middle;
+
+  /* Ensure SVG size matches text roughly */
+  svg {
+    width: 0.8em;
+    height: 0.8em;
+  }
+
+  &:focus {
+    opacity: 1;
+    outline: 2px solid $focus-color;
+    outline-offset: 2px;
+  }
+
+  &:hover {
+    color: $focus-color;
+  }
+
+  &.copied {
+    color: #4caf50;
+  }
+}
+
+/* Show anchor link on header hover */
+h2:hover .anchor-link,
+h3:hover .anchor-link,
+h4:hover .anchor-link,
+h5:hover .anchor-link,
+h6:hover .anchor-link {
+  opacity: 1;
+}
+
+/* Touch devices: always visible (or at least accessible) */
+@media (hover: none) {
+  .anchor-link {
+    opacity: 1;
+    color: #ccc;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .anchor-link {
+    color: #666;
+
+    &:hover {
+      color: lighten($focus-color, 10%);
+    }
+
+    &.copied {
+      color: #4caf50;
+    }
+  }
+
+  @media (hover: none) {
+    .anchor-link {
+      color: #444;
+    }
+  }
+}
