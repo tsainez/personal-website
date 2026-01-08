@@ -2,7 +2,8 @@
   // Target only the wrapper divs (or figures) to avoid selecting the inner 'pre.highlight'
   const codeBlocks = document.querySelectorAll('div.highlight, figure.highlight');
 
-  codeBlocks.forEach((block) => {
+  // Helper to create and append the button
+  function addCopyButton(block) {
     // Check if button already exists to prevent duplicates
     if (block.querySelector('.copy-code-button')) return;
 
@@ -13,7 +14,26 @@
     button.innerText = 'Copy';
 
     block.appendChild(button);
-  });
+  }
+
+  // Use IntersectionObserver to lazy-load buttons if supported
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          addCopyButton(entry.target);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      rootMargin: '200px 0px' // Load slightly before they appear
+    });
+
+    codeBlocks.forEach(block => observer.observe(block));
+  } else {
+    // Fallback for older browsers
+    codeBlocks.forEach(addCopyButton);
+  }
 
   // Performance Optimization: Event Delegation
   // Instead of attaching a listener to every button (O(N)), we attach one global listener (O(1)).
