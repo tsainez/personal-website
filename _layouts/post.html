@@ -33,20 +33,20 @@ layout: default
 
   <a class="u-url" href="{{ page.url | relative_url }}" hidden></a>
 
-  <div class="post-navigation">
+  <nav class="post-navigation" aria-label="Post navigation">
     {% if page.previous.url %}
       <div class="nav-previous">
-        <a href="{{ page.previous.url | relative_url }}" rel="prev">
+        <a href="{{ page.previous.url | relative_url }}" rel="prev" aria-label="Previous post: {{ page.previous.title | escape }}">
           &laquo; {{ page.previous.title | escape }}
         </a>
       </div>
     {% endif %}
     {% if page.next.url %}
       <div class="nav-next">
-        <a href="{{ page.next.url | relative_url }}" rel="next">
+        <a href="{{ page.next.url | relative_url }}" rel="next" aria-label="Next post: {{ page.next.title | escape }}">
           {{ page.next.title | escape }} &raquo;
         </a>
       </div>
     {% endif %}
-  </div>
+  </nav>
 </article>
