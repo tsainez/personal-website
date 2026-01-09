@@ -5,7 +5,7 @@ describe 'Security Enhancements' do
   let(:site_dir) { '_site' }
 
   describe 'External Links' do
-    it 'should use rel="noopener" for target="_blank" links' do
+    it 'should use rel="noopener noreferrer" for target="_blank" links' do
       Dir.glob(File.join(site_dir, '**', '*.html')).each do |file_path|
         doc = Nokogiri::HTML(File.read(file_path))
         links = doc.css('a[target="_blank"]')
@@ -14,6 +14,7 @@ describe 'Security Enhancements' do
           rel = link['rel']
           expect(rel).not_to be_nil, "Link to #{link['href']} in #{file_path} uses target=\"_blank\" but missing rel attribute"
           expect(rel).to include('noopener'), "Link to #{link['href']} in #{file_path} uses target=\"_blank\" but missing 'noopener'"
+          expect(rel).to include('noreferrer'), "Link to #{link['href']} in #{file_path} uses target=\"_blank\" but missing 'noreferrer'"
         end
       end
     end
