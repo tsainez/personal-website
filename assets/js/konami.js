@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+(function() {
   const konamiCode = [
     'ArrowUp', 'ArrowUp',
     'ArrowDown', 'ArrowDown',
@@ -31,7 +31,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const viewportHeight = window.innerHeight;
 
     // 2. Identify elements to animate
-    const elements = document.querySelectorAll('p, h1, h2, h3, li, span, .site-title, .page-link');
+    // Optimization: Exclude spans that are direct children of code elements (syntax highlighting tokens)
+    // to significantly reduce the candidate set on code-heavy pages.
+    const elements = document.querySelectorAll('p, h1, h2, h3, li, :not(code) > span, .site-title, .page-link');
     const visibleElements = [];
 
     elements.forEach(el => {
@@ -145,4 +147,4 @@ document.addEventListener('DOMContentLoaded', () => {
         rocket.style.top = "20%";
     }, 100);
   }
-});
+})();

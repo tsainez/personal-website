@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+(function() {
   const backToTopButton = document.getElementById('back-to-top');
 
   if (!backToTopButton) return;
@@ -23,11 +23,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }, { passive: true });
 
   backToTopButton.addEventListener('click', () => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: prefersReducedMotion ? 'auto' : 'smooth'
     });
     // Move focus back to the top of the document for accessibility
+    document.body.setAttribute('tabindex', '-1');
     document.body.focus();
+
+    // Clean up tabindex on blur
+    document.body.addEventListener('blur', () => {
+      document.body.removeAttribute('tabindex');
+    }, { once: true });
   });
-});
+})();
