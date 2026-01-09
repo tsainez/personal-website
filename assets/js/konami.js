@@ -102,14 +102,12 @@
     const size = Math.random() * 3;
     const duration = Math.random() * 3 + 1;
 
-    star.style.position = 'fixed';
+    // Performance: Static properties moved to CSS (.star class)
+    // to reduce inline style assignments (O(N) operations saved)
     star.style.left = `${x}px`;
     star.style.top = `${y}px`;
     star.style.width = `${size}px`;
     star.style.height = `${size}px`;
-    star.style.backgroundColor = 'white';
-    star.style.borderRadius = '50%';
-    star.style.zIndex = '-1';
     star.style.animation = `twinkle ${duration}s infinite alternate`;
 
     container.appendChild(star);
