@@ -344,3 +344,64 @@ html {
     text-align: right;
   }
 }
+
+/* Anchor Links */
+.anchor-link {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0 0.25rem;
+  color: #ccc;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.8em;
+  opacity: 0;
+  transition: opacity 0.2s ease, color 0.2s ease;
+
+  &:hover,
+  &:focus {
+    opacity: 1;
+    color: $focus-color;
+  }
+
+  /* Show on focus (tab) even if not hovering */
+  &:focus-visible {
+    opacity: 1;
+    outline: 2px solid $focus-color;
+    outline-offset: 2px;
+  }
+
+  &.copied {
+    color: #4caf50;
+    opacity: 1;
+
+    &::after {
+      content: " ✓";
+    }
+  }
+}
+
+/* Show anchor link when hovering the parent header */
+h2:hover .anchor-link,
+h3:hover .anchor-link,
+h4:hover .anchor-link,
+h5:hover .anchor-link,
+h6:hover .anchor-link {
+  opacity: 1;
+}
+
+@media (prefers-color-scheme: dark) {
+  .anchor-link {
+    color: #555;
+
+    &:hover,
+    &:focus {
+      color: lighten($focus-color, 10%);
+    }
+
+    &.copied {
+      color: #4caf50;
+    }
+  }
+}
