@@ -405,3 +405,27 @@ h6:hover .anchor-link {
     }
   }
 }
+
+/* Post Navigation Arrows */
+.nav-arrow {
+  display: inline-block;
+  transition: transform 0.2s ease;
+
+  &.left {
+    margin-right: 4px;
+  }
+
+  &.right {
+    margin-left: 4px;
+  }
+}
+
+.nav-previous a:hover .nav-arrow.left,
+.nav-previous a:focus .nav-arrow.left {
+  transform: translateX(-4px);
+}
+
+.nav-next a:hover .nav-arrow.right,
+.nav-next a:focus .nav-arrow.right {
+  transform: translateX(4px);
+}
