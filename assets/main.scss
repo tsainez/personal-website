@@ -6,6 +6,17 @@
 /* UX Enhancements */
 $focus-color: #82aaff;
 
+/* Reading Progress Bar */
+.reading-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 4px;
+  background-color: $focus-color;
+  z-index: 1000;
+}
+
 /* Skip to content link - visually hidden but accessible */
 .skip-link {
   position: absolute;
