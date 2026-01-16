@@ -6,7 +6,7 @@ describe 'Jekyll Site' do
       :check_html => true,
       :check_img_http => true,
       :disable_external => false, # Enable external link checking
-      :enforce_https => false,
+      :enforce_https => true,
       :ignore_urls => [],
       :hydra => { :max_concurrency => 5 },
       :typhoeus => {
