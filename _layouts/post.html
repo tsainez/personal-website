@@ -11,6 +11,7 @@ layout: default
         {{ page.date | date: date_format }}
       </time>
       <span class="post-meta"> •
+        <svg class="svg-icon" width="16" height="16" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 4px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
         {% assign words = content | number_of_words %}
         {% if words < 360 %}
           1 min read
@@ -36,15 +37,15 @@ layout: default
   <div class="post-navigation">
     {% if page.previous.url %}
       <div class="nav-previous">
-        <a href="{{ page.previous.url | relative_url }}" rel="prev">
-          &laquo; {{ page.previous.title | escape }}
+        <a href="{{ page.previous.url | relative_url }}" rel="prev" aria-label="Previous post: {{ page.previous.title | escape }}">
+          <span aria-hidden="true">&laquo;</span> {{ page.previous.title | escape }}
         </a>
       </div>
     {% endif %}
     {% if page.next.url %}
       <div class="nav-next">
-        <a href="{{ page.next.url | relative_url }}" rel="next">
-          {{ page.next.title | escape }} &raquo;
+        <a href="{{ page.next.url | relative_url }}" rel="next" aria-label="Next post: {{ page.next.title | escape }}">
+          {{ page.next.title | escape }} <span aria-hidden="true">&raquo;</span>
         </a>
       </div>
     {% endif %}
