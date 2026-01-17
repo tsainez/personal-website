@@ -16,29 +16,39 @@
 
       // Append it to the header
       header.appendChild(anchor);
+    });
 
-      // Add click event
-      anchor.addEventListener('click', async (e) => {
-        e.preventDefault();
-        const url = window.location.origin + window.location.pathname + '#' + header.id;
+    // Performance Optimization: Event Delegation
+    // Instead of attaching a listener to every button (O(N)), we attach one global listener (O(1)).
+    document.addEventListener('click', async (e) => {
+      const anchor = e.target.closest('.anchor-link');
+      if (!anchor) return;
 
-        try {
-          await navigator.clipboard.writeText(url);
+      e.preventDefault();
 
-          // Feedback
-          const originalText = anchor.innerHTML;
-          anchor.classList.add('copied');
-          anchor.setAttribute('aria-label', 'Link copied');
+      const header = anchor.parentElement;
+      if (!header || !header.id) return;
 
-          // Reset after 2 seconds
-          setTimeout(() => {
-            anchor.classList.remove('copied');
-            anchor.setAttribute('aria-label', 'Copy link to section');
-          }, 2000);
-        } catch (err) {
-          console.error('Failed to copy anchor:', err);
-        }
-      });
+      const url = window.location.origin + window.location.pathname + '#' + header.id;
+
+      try {
+        await navigator.clipboard.writeText(url);
+
+        // Feedback
+        anchor.classList.add('copied');
+        anchor.setAttribute('aria-label', 'Link copied');
+
+        // Reset after 2 seconds
+        if (anchor._timeoutId) clearTimeout(anchor._timeoutId);
+
+        anchor._timeoutId = setTimeout(() => {
+          anchor.classList.remove('copied');
+          anchor.setAttribute('aria-label', 'Copy link to section');
+          delete anchor._timeoutId;
+        }, 2000);
+      } catch (err) {
+        console.error('Failed to copy anchor:', err);
+      }
     });
   });
 })();
