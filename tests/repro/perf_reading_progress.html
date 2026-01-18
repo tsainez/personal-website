@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading Progress Performance Test</title>
+    <style>
+        body { margin: 0; font-family: sans-serif; }
+        .reading-progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 5px;
+            background: #007bff;
+            width: 0%;
+            z-index: 9999;
+            transition: width 0.1s;
+        }
+        .content {
+            height: 5000px;
+            background: linear-gradient(to bottom, #f0f0f0, #ccc);
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="reading-progress" class="reading-progress-bar"></div>
+    <div class="content">
+        <h1>Long Content</h1>
+        <p>Scroll down to see the progress bar.</p>
+        <button id="expand-content">Expand Content</button>
+    </div>
+
+    <script src="../../assets/js/reading-progress.js"></script>
+
+    <script>
+        // Simulate dynamic content loading
+        document.getElementById('expand-content').addEventListener('click', () => {
+            const div = document.createElement('div');
+            div.style.height = '2000px';
+            div.style.background = '#e0e0e0';
+            div.innerText = 'Extra Content';
+            document.body.appendChild(div);
+        });
+    </script>
+</body>
+</html>
