@@ -36,15 +36,15 @@ layout: default
   <div class="post-navigation">
     {% if page.previous.url %}
       <div class="nav-previous">
-        <a href="{{ page.previous.url | relative_url }}" rel="prev">
-          &laquo; {{ page.previous.title | escape }}
+        <a href="{{ page.previous.url | relative_url }}" rel="prev" aria-label="Previous post: {{ page.previous.title | escape }}">
+          <span aria-hidden="true" class="nav-arrow left">&laquo;</span> {{ page.previous.title | escape }}
         </a>
       </div>
     {% endif %}
     {% if page.next.url %}
       <div class="nav-next">
-        <a href="{{ page.next.url | relative_url }}" rel="next">
-          {{ page.next.title | escape }} &raquo;
+        <a href="{{ page.next.url | relative_url }}" rel="next" aria-label="Next post: {{ page.next.title | escape }}">
+          {{ page.next.title | escape }} <span aria-hidden="true" class="nav-arrow right">&raquo;</span>
         </a>
       </div>
     {% endif %}
