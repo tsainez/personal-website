@@ -14,6 +14,7 @@ describe 'Security Enhancements' do
           rel = link['rel']
           expect(rel).not_to be_nil, "Link to #{link['href']} in #{file_path} uses target=\"_blank\" but missing rel attribute"
           expect(rel).to include('noopener'), "Link to #{link['href']} in #{file_path} uses target=\"_blank\" but missing 'noopener'"
+          expect(rel).to include('noreferrer'), "Link to #{link['href']} in #{file_path} uses target=\"_blank\" but missing 'noreferrer'"
         end
       end
     end
