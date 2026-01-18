@@ -4,10 +4,17 @@
   if (!progressBar) return;
 
   let ticking = false;
+  let docHeight = 0;
+
+  // Performance Optimization: Cache docHeight to avoid forced synchronous layout in scroll handler
+  function updateMetrics() {
+    docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    // Force an update when metrics change
+    requestUpdate();
+  }
 
   function updateProgress() {
     const scrollTop = window.scrollY || document.documentElement.scrollTop;
-    const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
 
     // Prevent division by zero if page is not scrollable
     const scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
@@ -16,21 +23,30 @@
     ticking = false;
   }
 
-  window.addEventListener('scroll', () => {
+  function requestUpdate() {
     if (!ticking) {
       window.requestAnimationFrame(updateProgress);
       ticking = true;
     }
+  }
+
+  window.addEventListener('scroll', requestUpdate, { passive: true });
+
+  // Update metrics on resize
+  window.addEventListener('resize', () => {
+    updateMetrics();
   }, { passive: true });
 
-  // Update on resize as document height might change
-  window.addEventListener('resize', () => {
-    if (!ticking) {
-      window.requestAnimationFrame(updateProgress);
-      ticking = true;
-    }
-  }, { passive: true });
+  // Use ResizeObserver to detect content changes (e.g. lazy loaded images)
+  // This is more performant than checking scrollHeight on every frame
+  if ('ResizeObserver' in window) {
+    const resizeObserver = new ResizeObserver(() => {
+      updateMetrics();
+    });
+    // Observe body for height changes
+    resizeObserver.observe(document.body);
+  }
 
   // Initial update
-  updateProgress();
+  updateMetrics();
 })();
