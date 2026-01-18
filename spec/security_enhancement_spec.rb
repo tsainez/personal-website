@@ -5,7 +5,7 @@ describe 'Security Enhancements' do
   let(:site_dir) { '_site' }
 
   describe 'External Links' do
-    it 'should use rel="noopener" for target="_blank" links' do
+    it 'should use rel="noopener noreferrer" for target="_blank" links' do
       Dir.glob(File.join(site_dir, '**', '*.html')).each do |file_path|
         doc = Nokogiri::HTML(File.read(file_path))
         links = doc.css('a[target="_blank"]')
