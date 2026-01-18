@@ -17,3 +17,8 @@
 **Vulnerability:** GitHub Pages does not support `X-Frame-Options` or `Content-Security-Policy: frame-ancestors` headers, leaving the site vulnerable to Clickjacking.
 **Learning:** Security headers that prevent framing cannot be set via `<meta>` tags (specifically `frame-ancestors`). The only viable mitigation for static hosting without header control is JavaScript-based "Frame Busting".
 **Prevention:** Implemented `security.js` with a frame-busting script and included it in `<head>`. This is an imperfect but necessary workaround for this environment.
+
+## 2025-02-19 - [Insecure Link Verification]
+**Vulnerability:** The automated link checker (`html-proofer`) was configured to disable SSL verification (`ssl_verifypeer: false`) and allow HTTP links (`enforce_https: false`), potentially allowing insecure links to persist in the codebase.
+**Learning:** Verification tools often have insecure defaults or configurations copied from StackOverflow to "fix" local errors (like self-signed certs), which then weaken production safety checks.
+**Prevention:** Audit CI/test configurations for flags that disable security checks (e.g., `verify: false`, `insecure: true`) and enforce strict defaults.
