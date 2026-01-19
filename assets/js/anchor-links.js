@@ -4,8 +4,10 @@
     // Select headers within the post content or page content
     const headers = document.querySelectorAll('.post-content h2, .post-content h3, .post-content h4, .post-content h5, .post-content h6, .page-content h2, .page-content h3, .page-content h4');
 
-    headers.forEach(header => {
+    function addAnchorLink(header) {
       if (!header.id) return;
+      // Prevent duplicates
+      if (header.querySelector('.anchor-link')) return;
 
       // Create the anchor link button
       const anchor = document.createElement('button');
@@ -16,7 +18,27 @@
 
       // Append it to the header
       header.appendChild(anchor);
-    });
+    }
+
+    // Optimization: Lazy load anchor links only when headers are near the viewport.
+    // This reduces initial DOM manipulations and improves TTI on long posts.
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            addAnchorLink(entry.target);
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        rootMargin: '200px 0px' // Load slightly before they appear
+      });
+
+      headers.forEach(header => observer.observe(header));
+    } else {
+      // Fallback for older browsers
+      headers.forEach(addAnchorLink);
+    }
   });
 
   // Performance Optimization: Event Delegation

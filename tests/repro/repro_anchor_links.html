@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Anchor Links Repro</title>
+  <style>
+    body { margin: 0; padding: 0; }
+    .page-content { padding: 20px; }
+    /* Increase spacing to ensure elements are well outside the rootMargin */
+    h2 { margin-top: 200vh; margin-bottom: 20px; }
+    .first-header { margin-top: 20px; }
+    .anchor-link { margin-left: 10px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="page-content">
+    <h2 id="header-1" class="first-header">Header 1 (Visible)</h2>
+    <h2 id="header-2">Header 2 (Hidden)</h2>
+    <h2 id="header-3">Header 3 (Hidden)</h2>
+  </div>
+
+  <script src="../../assets/js/anchor-links.js"></script>
+</body>
+</html>
