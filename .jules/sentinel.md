@@ -17,3 +17,8 @@
 **Vulnerability:** GitHub Pages does not support `X-Frame-Options` or `Content-Security-Policy: frame-ancestors` headers, leaving the site vulnerable to Clickjacking.
 **Learning:** Security headers that prevent framing cannot be set via `<meta>` tags (specifically `frame-ancestors`). The only viable mitigation for static hosting without header control is JavaScript-based "Frame Busting".
 **Prevention:** Implemented `security.js` with a frame-busting script and included it in `<head>`. This is an imperfect but necessary workaround for this environment.
+
+## 2026-01-19 - [Preventing Stored XSS in Jekyll Templates]
+**Vulnerability:** Unescaped `page.*` variables in Jekyll layouts (specifically `lang`, `author`, `title`, `list_title`).
+**Learning:** Liquid templates default to raw output (`{{ variable }}`). Even for static sites, content originating from "trusted" front matter should be treated as untrusted if the repository accepts external contributions (PRs). Malicious front matter can inject arbitrary HTML/JS.
+**Prevention:** Always use the `| escape` filter for any variable output into HTML attributes or text content, unless raw HTML is explicitly intended and sanitized.
