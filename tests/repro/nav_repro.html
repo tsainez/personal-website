@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Navigation Reproduction</title>
+    <style>
+        /* Simulation of relevant styles from main.scss */
+        body { font-family: sans-serif; }
+        .site-nav { background: #eee; padding: 10px; }
+        .page-link { margin-right: 15px; text-decoration: none; color: #333; }
+
+        /* The style we want to test */
+        .site-nav .page-link[aria-current="page"] {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <nav class="site-nav">
+            <a class="page-link" href="/">Home</a>
+            <a class="page-link" href="/about/" aria-current="page">About</a>
+            <a class="page-link" href="/blog/">Blog</a>
+        </nav>
+    </header>
+</body>
+</html>
