@@ -30,3 +30,31 @@ test('reading progress bar updates on scroll', async ({ page }) => {
   const styleEnd = await progressBar.getAttribute('style');
   expect(styleEnd).toMatch(/width: 100(\.\d+)?%;/);
 });
+
+test('reading progress bar adapts to content resize', async ({ page }) => {
+  await page.goto('http://localhost:8081/tests/repro/repro_reading_progress.html');
+  const progressBar = page.locator('#reading-progress');
+
+  // Set initial height and scroll
+  await page.evaluate(() => {
+     document.body.style.height = '2000px';
+     window.scrollTo(0, 500);
+  });
+  await page.waitForTimeout(500); // Wait for scroll and observer
+
+  const style1 = await progressBar.getAttribute('style');
+  const width1 = parseFloat(style1.match(/width: (\d+(\.\d+)?)%/)[1]);
+
+  // Now make body much taller
+  await page.evaluate(() => {
+     document.body.style.height = '5000px';
+  });
+  // We do NOT dispatch scroll event. We rely on ResizeObserver.
+
+  await page.waitForTimeout(500); // Wait for observer
+
+  const style2 = await progressBar.getAttribute('style');
+  const width2 = parseFloat(style2.match(/width: (\d+(\.\d+)?)%/)[1]);
+
+  expect(width2).toBeLessThan(width1);
+});
