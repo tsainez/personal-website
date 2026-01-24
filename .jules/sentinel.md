@@ -17,3 +17,8 @@
 **Vulnerability:** GitHub Pages does not support `X-Frame-Options` or `Content-Security-Policy: frame-ancestors` headers, leaving the site vulnerable to Clickjacking.
 **Learning:** Security headers that prevent framing cannot be set via `<meta>` tags (specifically `frame-ancestors`). The only viable mitigation for static hosting without header control is JavaScript-based "Frame Busting".
 **Prevention:** Implemented `security.js` with a frame-busting script and included it in `<head>`. This is an imperfect but necessary workaround for this environment.
+
+## 2025-02-20 - [Protocol-Relative Link Tabnabbing]
+**Vulnerability:** The `_plugins/external_links.rb` plugin used a regex that only matched `http` and `https` links, missing protocol-relative links (starting with `//`). This left those links vulnerable to reverse tabnabbing (missing `noopener noreferrer` on `target="_blank"`).
+**Learning:** Regex for URL matching often misses protocol-relative URLs (`//`). When securing external links, always account for `//` as a valid external prefix.
+**Prevention:** Updated regex to `(?:(?:https?):)?\/\/` to match both explicit protocols and protocol-relative links.
