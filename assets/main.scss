@@ -440,3 +440,13 @@ h6:hover .anchor-link {
 .nav-next a:focus .nav-arrow.right {
   transform: translateX(4px);
 }
+
+/* Active Navigation Link */
+.site-nav .page-link[aria-current="page"] {
+  font-weight: bold;
+  border-bottom: 2px solid $focus-color;
+
+  @media (prefers-color-scheme: dark) {
+    color: #fff;
+  }
+}
