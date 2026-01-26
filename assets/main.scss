@@ -6,6 +6,15 @@
 /* UX Enhancements */
 $focus-color: #82aaff;
 
+/* Active Navigation State */
+.site-nav .page-link[aria-current="page"] {
+  color: $focus-color;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
 /* Reading Progress Bar */
 .reading-progress-bar {
   position: fixed;
