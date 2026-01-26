@@ -17,3 +17,8 @@
 **Vulnerability:** GitHub Pages does not support `X-Frame-Options` or `Content-Security-Policy: frame-ancestors` headers, leaving the site vulnerable to Clickjacking.
 **Learning:** Security headers that prevent framing cannot be set via `<meta>` tags (specifically `frame-ancestors`). The only viable mitigation for static hosting without header control is JavaScript-based "Frame Busting".
 **Prevention:** Implemented `security.js` with a frame-busting script and included it in `<head>`. This is an imperfect but necessary workaround for this environment.
+
+## 2026-01-26 - Robust External Link Protection
+**Vulnerability:** The regex in `_plugins/external_links.rb` was brittle, failing to detect `target="_blank"` if it appeared before `href` or if the URL was protocol-relative (`//`). This left some external links unprotected against Reverse Tabnabbing.
+**Learning:** Regex for HTML parsing is inherently fragile. Security controls relying on attribute order in HTML tags are prone to bypass. Also, protocol-relative URLs (`//example.com`) are valid external links often missed by simple `http/s` checks.
+**Prevention:** Use robust regex (or preferably HTML parsers) that are attribute-order independent. Always account for protocol-relative URLs when checking for external links. Added a regression test `tests/verify_external_links_plugin.rb` that mocks the Jekyll environment to verify the plugin logic.
