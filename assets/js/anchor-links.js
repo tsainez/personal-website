@@ -4,8 +4,8 @@
     // Select headers within the post content or page content
     const headers = document.querySelectorAll('.post-content h2, .post-content h3, .post-content h4, .post-content h5, .post-content h6, .page-content h2, .page-content h3, .page-content h4');
 
-    headers.forEach(header => {
-      if (!header.id) return;
+    function addAnchorLink(header) {
+      if (!header.id || header.querySelector('.anchor-link')) return;
 
       // Create the anchor link button
       const anchor = document.createElement('button');
@@ -16,7 +16,24 @@
 
       // Append it to the header
       header.appendChild(anchor);
-    });
+    }
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            addAnchorLink(entry.target);
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        rootMargin: '200px 0px'
+      });
+
+      headers.forEach(header => observer.observe(header));
+    } else {
+      headers.forEach(addAnchorLink);
+    }
   });
 
   // Performance Optimization: Event Delegation
