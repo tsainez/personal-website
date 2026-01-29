@@ -1,87 +1,98 @@
 import sys
 import subprocess
 import time
-import requests
-from playwright.sync_api import sync_playwright
+import unittest
 
-def run_test():
-    # 1. Start Jekyll Server
-    print("Starting Jekyll server...")
-    jekyll_process = subprocess.Popen(
-        ["bundle", "exec", "jekyll", "serve", "--port", "4000", "--skip-initial-build"],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL
-    )
+try:
+    import requests
+    REQUESTS_AVAILABLE = True
+except ImportError:
+    REQUESTS_AVAILABLE = False
 
-    # 2. Serve the attacker page (simple python http server)
-    print("Starting Attacker server...")
-    attacker_process = subprocess.Popen(
-        [sys.executable, "-m", "http.server", "8000", "--directory", "tests/repro"],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL
-    )
+try:
+    from playwright.sync_api import sync_playwright
+    PLAYWRIGHT_AVAILABLE = True
+except ImportError:
+    PLAYWRIGHT_AVAILABLE = False
 
-    try:
-        # Wait for servers to start
-        time.sleep(5)
+class TestClickjackImprovement(unittest.TestCase):
+    @unittest.skipUnless(REQUESTS_AVAILABLE, "requests module not available")
+    @unittest.skipUnless(PLAYWRIGHT_AVAILABLE, "playwright module not available")
+    def test_clickjack_protection(self):
+        # 1. Start Jekyll Server
+        print("Starting Jekyll server...")
+        jekyll_process = subprocess.Popen(
+            ["bundle", "exec", "jekyll", "serve", "--port", "4000", "--skip-initial-build"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
 
-        with sync_playwright() as p:
-            browser = p.chromium.launch()
-            page = browser.new_page()
+        # 2. Serve the attacker page (simple python http server)
+        print("Starting Attacker server...")
+        attacker_process = subprocess.Popen(
+            [sys.executable, "-m", "http.server", "8000", "--directory", "tests/repro"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
 
-            # Capture console logs
-            page.on("console", lambda msg: print(f"Browser Console: {msg.text}"))
-            page.on("pageerror", lambda err: print(f"Browser Error: {err}"))
+        try:
+            # Wait for servers to start
+            time.sleep(5)
 
-            print("Navigating to Attacker Page...")
-            try:
-                page.goto("http://localhost:8000/attacker.html")
-            except Exception as e:
-                print(f"Error navigating: {e}")
-                return False
+            with sync_playwright() as p:
+                browser = p.chromium.launch()
+                page = browser.new_page()
 
-            # Allow some time for scripts to run
-            time.sleep(2)
+                # Capture console logs
+                page.on("console", lambda msg: print(f"Browser Console: {msg.text}"))
+                page.on("pageerror", lambda err: print(f"Browser Error: {err}"))
 
-            # Get the iframe
-            frame_element = page.query_selector("#victim-frame")
-            if not frame_element:
-                print("Error: Iframe element not found.")
-                return False
+                print("Navigating to Attacker Page...")
+                try:
+                    page.goto("http://localhost:8000/attacker.html")
+                except Exception as e:
+                    self.fail(f"Error navigating: {e}")
 
-            frame = frame_element.content_frame()
-            if not frame:
-                print("Error: Iframe content not accessible.")
-                return False
+                # Allow some time for scripts to run
+                time.sleep(2)
 
-            # Check if the body inside the frame is visible
-            is_visible = False
-            try:
-                # We check if 'body' is visible.
-                # If display:none on html, body is not visible.
-                body_handle = frame.wait_for_selector("body", state="attached", timeout=2000)
-                if body_handle:
-                    is_visible = body_handle.is_visible()
-            except Exception as e:
-                print(f"Error checking visibility: {e}")
+                # Get the iframe
+                frame_element = page.query_selector("#victim-frame")
+                if not frame_element:
+                    self.fail("Error: Iframe element not found.")
 
-            print(f"Frame Body Visible: {is_visible}")
+                frame = frame_element.content_frame()
+                if not frame:
+                    self.fail("Error: Iframe content not accessible.")
 
-            current_url = page.url
-            print(f"Current URL: {current_url}")
+                # Check if the body inside the frame is visible
+                is_visible = False
+                try:
+                    # We check if 'body' is visible.
+                    # If display:none on html, body is not visible.
+                    body_handle = frame.wait_for_selector("body", state="attached", timeout=2000)
+                    if body_handle:
+                        is_visible = body_handle.is_visible()
+                except Exception as e:
+                    print(f"Error checking visibility: {e}")
 
-            if "localhost:8000" in current_url and is_visible:
-                print("VULNERABILITY CONFIRMED: Site is framed and visible.")
-            elif "localhost:8000" in current_url and not is_visible:
-                 print("PROTECTION CONFIRMED: Site is framed but HIDDEN.")
-            elif "localhost:4000" in current_url:
-                 print("REDIRECT SUCCESSFUL: Frame busting worked.")
+                print(f"Frame Body Visible: {is_visible}")
 
-            browser.close()
+                current_url = page.url
+                print(f"Current URL: {current_url}")
 
-    finally:
-        jekyll_process.terminate()
-        attacker_process.terminate()
+                if "localhost:8000" in current_url and is_visible:
+                    print("VULNERABILITY CONFIRMED: Site is framed and visible.")
+                elif "localhost:8000" in current_url and not is_visible:
+                     print("PROTECTION CONFIRMED: Site is framed but HIDDEN.")
+                elif "localhost:4000" in current_url:
+                     print("REDIRECT SUCCESSFUL: Frame busting worked.")
+
+                browser.close()
+
+        finally:
+            jekyll_process.terminate()
+            attacker_process.terminate()
 
 if __name__ == "__main__":
-    run_test()
+    unittest.main()

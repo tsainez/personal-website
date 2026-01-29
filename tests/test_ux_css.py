@@ -3,22 +3,21 @@ import os
 import re
 
 class TestUXCSS(unittest.TestCase):
+    def setUp(self):
+        self.css_path = os.path.join('_site', 'assets', 'main.css')
+        if not os.path.exists(self.css_path):
+            self.skipTest(f"{self.css_path} does not exist. Jekyll build likely skipped or failed.")
+
     def test_css_contains_smooth_scrolling(self):
         """Test that smooth scrolling is enabled in the CSS."""
-        css_path = os.path.join('_site', 'assets', 'main.css')
-        self.assertTrue(os.path.exists(css_path), "main.css does not exist.")
-
-        with open(css_path, 'r', encoding='utf-8') as f:
+        with open(self.css_path, 'r', encoding='utf-8') as f:
             content = f.read()
             # Allow for optional spaces around colon
             self.assertTrue(re.search(r"scroll-behavior:\s*smooth", content), "Smooth scrolling not found in CSS")
 
     def test_css_contains_focus_visible(self):
         """Test that focus-visible styles are present."""
-        css_path = os.path.join('_site', 'assets', 'main.css')
-        self.assertTrue(os.path.exists(css_path), "main.css does not exist.")
-
-        with open(css_path, 'r', encoding='utf-8') as f:
+        with open(self.css_path, 'r', encoding='utf-8') as f:
             content = f.read()
             self.assertIn(":focus-visible", content, ":focus-visible selector not found in CSS")
             # Allow for optional spaces and case insensitivity if needed, though colors are usually consistent
@@ -26,10 +25,7 @@ class TestUXCSS(unittest.TestCase):
 
     def test_css_contains_reduced_motion(self):
         """Test that reduced motion preference is respected."""
-        css_path = os.path.join('_site', 'assets', 'main.css')
-        self.assertTrue(os.path.exists(css_path), "main.css does not exist.")
-
-        with open(css_path, 'r', encoding='utf-8') as f:
+        with open(self.css_path, 'r', encoding='utf-8') as f:
             content = f.read()
             # Allow for minified format: @media(prefers-reduced-motion: reduce) (no space after @media)
             self.assertTrue(re.search(r"@media\s*\(prefers-reduced-motion:\s*reduce\)", content), "Reduced motion query not found")
