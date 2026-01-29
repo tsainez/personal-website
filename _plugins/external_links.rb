@@ -1,7 +1,7 @@
 Jekyll::Hooks.register [:documents, :pages], :post_render do |doc|
   next unless doc.output_ext == ".html"
 
-  doc.output.gsub!(/<a\s+(?:[^>]*?\s+)?href=(["'])(?:http|https):\/\/[^"']+\1(?:[^>]*?\s+)?target=(["'])_blank\2[^>]*>/) do |match|
+  doc.output.gsub!(/<a\s+(?:[^>]*?\s+)?href=(["'])(?:(?:http|https):)?\/\/[^"']+\1(?:[^>]*?\s+)?target=(["'])_blank\2[^>]*>/) do |match|
     if match.include?('rel=')
       if match.include?('noopener') && match.include?('noreferrer')
         match
