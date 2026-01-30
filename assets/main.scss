@@ -6,6 +6,21 @@
 /* UX Enhancements */
 $focus-color: #82aaff;
 
+/* Active Navigation State */
+.site-nav .page-link[aria-current="page"] {
+  font-weight: bold;
+
+  /* Underline effect that doesn't clash with descenders */
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+
+  /* Use focus color for active state in dark mode or if not overridden */
+  @media (prefers-color-scheme: dark) {
+    color: $focus-color;
+  }
+}
+
 /* Reading Progress Bar */
 .reading-progress-bar {
   position: fixed;
