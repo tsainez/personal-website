@@ -17,3 +17,8 @@
 **Vulnerability:** GitHub Pages does not support `X-Frame-Options` or `Content-Security-Policy: frame-ancestors` headers, leaving the site vulnerable to Clickjacking.
 **Learning:** Security headers that prevent framing cannot be set via `<meta>` tags (specifically `frame-ancestors`). The only viable mitigation for static hosting without header control is JavaScript-based "Frame Busting".
 **Prevention:** Implemented `security.js` with a frame-busting script and included it in `<head>`. This is an imperfect but necessary workaround for this environment.
+
+## 2025-10-30 - [Regex Security for External Links]
+**Vulnerability:** Regex-based HTML manipulation for external links missed protocol-relative URLs (`//`) and relied on attribute order (`href` before `target`), potentially allowing reverse tabnabbing.
+**Learning:** When using regex to parse HTML (due to missing `nokogiri`), avoid complex patterns that assume attribute order. Instead, match the tag first, then use separate checks (e.g. `match.include?`) or simpler regexes within the match block to validate attributes. Always explicitly handle `//` when matching URLs.
+**Prevention:** Use decoupled regex checks: one broad regex to find the tag, and specific logic inside the block to check attributes. Test with protocol-relative URLs.
