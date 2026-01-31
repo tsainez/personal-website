@@ -1,8 +1,30 @@
 const { test, expect } = require('@playwright/test');
+const fs = require('fs');
+const path = require('path');
 
 test('reading progress bar updates on scroll', async ({ page }) => {
-  // Use local server
-  await page.goto('http://localhost:8081/tests/repro/repro_reading_progress.html');
+  const jsContent = fs.readFileSync(path.join(__dirname, '../../assets/js/reading-progress.js'), 'utf8');
+
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        body { height: 5000px; margin: 0; padding: 0; }
+        #reading-progress {
+          position: fixed; top: 0; left: 0; height: 4px; background: red; width: 0;
+        }
+      </style>
+    </head>
+    <body>
+      <div id="reading-progress"></div>
+      <h1>Long Content</h1>
+      <script>${jsContent}</script>
+    </body>
+    </html>
+  `;
+
+  await page.setContent(html);
   const progressBar = page.locator('#reading-progress');
 
   // Initial check
