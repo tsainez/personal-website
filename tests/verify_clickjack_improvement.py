@@ -1,3 +1,15 @@
+# Manual Verification Script for Clickjacking Protection
+#
+# This script is intended for manual verification and requires dependencies that are NOT
+# present in the CI environment (requests, playwright).
+#
+# Usage:
+#   1. Install dependencies: pip install requests playwright
+#   2. Install browsers: python3 -m playwright install chromium
+#   3. Run: python3 tests/verify_clickjack_improvement.py
+#
+# Note: This file is named `verify_*.py` to exclude it from `python -m unittest discover tests`.
+
 import sys
 import subprocess
 import time
