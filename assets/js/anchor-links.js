@@ -1,23 +1,46 @@
 (function() {
-  // Wait for DOM content to be loaded
-  document.addEventListener('DOMContentLoaded', () => {
+  // Helper function to create and append the anchor link
+  function addAnchor(header) {
+    if (!header.id || header.querySelector('.anchor-link')) return;
+
+    const anchor = document.createElement('button');
+    anchor.className = 'anchor-link';
+    anchor.innerHTML = '#';
+    anchor.setAttribute('aria-label', 'Copy link to section');
+    anchor.setAttribute('title', 'Copy link to section');
+
+    header.appendChild(anchor);
+  }
+
+  function init() {
     // Select headers within the post content or page content
     const headers = document.querySelectorAll('.post-content h2, .post-content h3, .post-content h4, .post-content h5, .post-content h6, .page-content h2, .page-content h3, .page-content h4');
 
-    headers.forEach(header => {
-      if (!header.id) return;
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            addAnchor(entry.target);
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        // Start loading slightly before it comes into view for better UX
+        rootMargin: '200px 0px'
+      });
 
-      // Create the anchor link button
-      const anchor = document.createElement('button');
-      anchor.className = 'anchor-link';
-      anchor.innerHTML = '#';
-      anchor.setAttribute('aria-label', 'Copy link to section');
-      anchor.setAttribute('title', 'Copy link to section');
+      headers.forEach(header => observer.observe(header));
+    } else {
+      // Fallback for older browsers
+      headers.forEach(addAnchor);
+    }
+  }
 
-      // Append it to the header
-      header.appendChild(anchor);
-    });
-  });
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 
   // Performance Optimization: Event Delegation
   // Instead of attaching a listener to every button (O(N)), we attach one global listener (O(1)).
