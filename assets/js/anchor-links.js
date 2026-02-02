@@ -4,8 +4,8 @@
     // Select headers within the post content or page content
     const headers = document.querySelectorAll('.post-content h2, .post-content h3, .post-content h4, .post-content h5, .post-content h6, .page-content h2, .page-content h3, .page-content h4');
 
-    headers.forEach(header => {
-      if (!header.id) return;
+    function addAnchor(header) {
+      if (!header.id || header.querySelector('.anchor-link')) return;
 
       // Create the anchor link button
       const anchor = document.createElement('button');
@@ -16,7 +16,30 @@
 
       // Append it to the header
       header.appendChild(anchor);
-    });
+    }
+
+    // Performance Optimization: Lazy load anchor links
+    // Only create and append buttons when the header is close to the viewport.
+    // This reduces initial DOM manipulation and layout calculation costs on long pages.
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            addAnchor(entry.target);
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        rootMargin: '200px 0px' // Load slightly before they appear
+      });
+
+      headers.forEach(header => {
+        if (header.id) observer.observe(header);
+      });
+    } else {
+      // Fallback for older browsers
+      headers.forEach(addAnchor);
+    }
   });
 
   // Performance Optimization: Event Delegation
