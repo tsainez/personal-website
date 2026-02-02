@@ -1,3 +1,8 @@
+# This file is named verify_clickjack_improvement.py instead of test_clickjack_improvement.py
+# to avoid being automatically discovered by 'python3 -m unittest discover tests' in CI environments.
+# This test requires 'requests' and 'playwright' which are not installed in the standard CI environment.
+# Run this test manually when dependencies are available.
+
 import sys
 import subprocess
 import time
