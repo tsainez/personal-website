@@ -1,8 +1,10 @@
 const { test, expect } = require('@playwright/test');
+const path = require('path');
 
 test('reading progress bar updates on scroll', async ({ page }) => {
-  // Use local server
-  await page.goto('http://localhost:8081/tests/repro/repro_reading_progress.html');
+  // Use local file
+  const fileUrl = 'file://' + path.resolve(__dirname, 'repro_reading_progress.html');
+  await page.goto(fileUrl);
   const progressBar = page.locator('#reading-progress');
 
   // Initial check
