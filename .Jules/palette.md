@@ -13,3 +13,7 @@
 ## 2025-05-21 - Accessible Post Navigation
 **Learning:** When using decorative characters like `«` or `»` in links, screen readers may announce them awkwardly. It's better to wrap them in `aria-hidden="true"` and provide a robust `aria-label` for the link itself.
 **Action:** For all "Previous/Next" navigation links, use `aria-label="Previous post: [Title]"` and hide decorative arrows from assistive technology.
+
+## 2025-05-21 - Active Navigation State
+**Learning:** Users (especially those using screen readers) need to know which page they are currently on in the navigation menu. Visual-only cues like bold text are insufficient for screen readers.
+**Action:** Use `aria-current="page"` on the navigation link that corresponds to the current URL. This provides a standard programmatic indication of the active item.

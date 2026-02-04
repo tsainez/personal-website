@@ -1,10 +1,19 @@
 import sys
 import subprocess
 import time
-import requests
-from playwright.sync_api import sync_playwright
+
+try:
+    import requests
+    from playwright.sync_api import sync_playwright
+except ImportError:
+    requests = None
+    sync_playwright = None
 
 def run_test():
+    if not requests or not sync_playwright:
+        print("Skipping test: requests or playwright not installed.")
+        return
+
     # 1. Start Jekyll Server
     print("Starting Jekyll server...")
     jekyll_process = subprocess.Popen(
