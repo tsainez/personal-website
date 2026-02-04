@@ -4,13 +4,18 @@
   if (!progressBar) return;
 
   let ticking = false;
+  let cachedDocHeight = 0;
+
+  // Optimized: Read layout properties only when necessary (resize/content change), not on every scroll
+  function updateDimensions() {
+    cachedDocHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  }
 
   function updateProgress() {
     const scrollTop = window.scrollY || document.documentElement.scrollTop;
-    const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
 
-    // Prevent division by zero if page is not scrollable
-    const scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    // Use cached document height to avoid layout thrashing
+    const scrollPercent = cachedDocHeight > 0 ? (scrollTop / cachedDocHeight) * 100 : 0;
 
     progressBar.style.width = scrollPercent + '%';
     ticking = false;
@@ -23,14 +28,29 @@
     }
   }, { passive: true });
 
-  // Update on resize as document height might change
+  // Update cached dimensions on window resize
   window.addEventListener('resize', () => {
+    updateDimensions();
     if (!ticking) {
       window.requestAnimationFrame(updateProgress);
       ticking = true;
     }
   }, { passive: true });
 
-  // Initial update
+  // Use ResizeObserver to detect dynamic content changes that affect height
+  if ('ResizeObserver' in window) {
+    const resizeObserver = new ResizeObserver(() => {
+      updateDimensions();
+      if (!ticking) {
+        window.requestAnimationFrame(updateProgress);
+        ticking = true;
+      }
+    });
+    // Observing body is usually enough to catch content growth
+    resizeObserver.observe(document.body);
+  }
+
+  // Initial calculation
+  updateDimensions();
   updateProgress();
 })();
