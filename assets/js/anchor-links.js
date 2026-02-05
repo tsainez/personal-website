@@ -1,11 +1,12 @@
 (function() {
-  // Wait for DOM content to be loaded
-  document.addEventListener('DOMContentLoaded', () => {
+  const init = () => {
     // Select headers within the post content or page content
     const headers = document.querySelectorAll('.post-content h2, .post-content h3, .post-content h4, .post-content h5, .post-content h6, .page-content h2, .page-content h3, .page-content h4');
 
-    headers.forEach(header => {
+    const addAnchor = (header) => {
       if (!header.id) return;
+      // Ensure we don't add duplicate buttons
+      if (header.querySelector('.anchor-link')) return;
 
       // Create the anchor link button
       const anchor = document.createElement('button');
@@ -16,8 +17,35 @@
 
       // Append it to the header
       header.appendChild(anchor);
-    });
-  });
+    };
+
+    // Performance Optimization: Use IntersectionObserver to lazy-load anchor links
+    // This reduces initial DOM nodes and layout cost on long pages.
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            addAnchor(entry.target);
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        // Load anchors slightly before they scroll into view
+        rootMargin: '200px'
+      });
+
+      headers.forEach(header => observer.observe(header));
+    } else {
+      // Fallback for older browsers
+      headers.forEach(addAnchor);
+    }
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 
   // Performance Optimization: Event Delegation
   // Instead of attaching a listener to every button (O(N)), we attach one global listener (O(1)).
