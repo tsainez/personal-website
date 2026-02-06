@@ -17,3 +17,8 @@
 **Vulnerability:** GitHub Pages does not support `X-Frame-Options` or `Content-Security-Policy: frame-ancestors` headers, leaving the site vulnerable to Clickjacking.
 **Learning:** Security headers that prevent framing cannot be set via `<meta>` tags (specifically `frame-ancestors`). The only viable mitigation for static hosting without header control is JavaScript-based "Frame Busting".
 **Prevention:** Implemented `security.js` with a frame-busting script and included it in `<head>`. This is an imperfect but necessary workaround for this environment.
+
+## 2025-10-28 - [Reverse Tabnabbing via External Links]
+**Vulnerability:** External links using `target="_blank"` were vulnerable to reverse tabnabbing because the regex-based plugin failed to detect attributes when swapped (e.g., `target` before `href`) or when using protocol-relative URLs (`//example.com`).
+**Learning:** Regex parsing of HTML is fragile. When `nokogiri` or other HTML parsers are unavailable (as in this specific Ruby environment), regex must be extremely robust and attribute-order agnostic. It's safer to parse the tag string for attributes independently than to rely on a single ordered regex.
+**Prevention:** Updated `_plugins/external_links.rb` to iterate over all `<a>` tags and independently check for `target="_blank"` and external `href` indicators, ensuring `rel="noopener noreferrer"` is always applied correctly.
