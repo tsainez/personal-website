@@ -13,3 +13,7 @@
 ## 2025-05-21 - Accessible Post Navigation
 **Learning:** When using decorative characters like `«` or `»` in links, screen readers may announce them awkwardly. It's better to wrap them in `aria-hidden="true"` and provide a robust `aria-label` for the link itself.
 **Action:** For all "Previous/Next" navigation links, use `aria-label="Previous post: [Title]"` and hide decorative arrows from assistive technology.
+
+## 2025-05-22 - Visual Indicator for External Links (Dark Mode Compatible)
+**Learning:** Using `background-image` for icons works poorly in dark mode if the icon color is hardcoded (e.g., black). SVG masks with `background-color: currentColor` allow the icon to inherit the text color automatically, adapting seamlessly to light/dark themes without extra media queries.
+**Action:** Prefer `mask` / `-webkit-mask` with `currentColor` over `background-image` for simple single-color UI icons.
