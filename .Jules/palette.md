@@ -13,3 +13,7 @@
 ## 2025-05-21 - Accessible Post Navigation
 **Learning:** When using decorative characters like `«` or `»` in links, screen readers may announce them awkwardly. It's better to wrap them in `aria-hidden="true"` and provide a robust `aria-label` for the link itself.
 **Action:** For all "Previous/Next" navigation links, use `aria-label="Previous post: [Title]"` and hide decorative arrows from assistive technology.
+
+## 2025-05-22 - External Link Indicators
+**Learning:** Static site generators like Jekyll often lack a built-in way to distinguish external links, leading to user confusion about navigation context.
+**Action:** Use a small, dependency-free JS utility to scan content areas (`.post-content`) for external hostnames and inject an icon + `.sr-only` text. This avoids regex-based build plugins which can be brittle and ensures consistent behavior across themes.
