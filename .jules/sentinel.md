@@ -22,3 +22,8 @@
 **Vulnerability:** External link protection missed protocol-relative URLs (`//example.com`) and links with `target` before `href`.
 **Learning:** Regex-based HTML parsing is brittle. Simple patterns like `http|https` miss `//`. Fixed attribute order in regexes creates blind spots.
 **Prevention:** When using regex for HTML, explicitly test for protocol-relative URLs and variable attribute ordering/spacing.
+
+## 2025-02-19 - [Stored XSS in Jekyll Templates]
+**Vulnerability:** Jekyll templates (`_layouts/home.html`, `_layouts/post.html`) outputted `page.title`, `page.list_title`, and `page.author` without escaping, allowing Stored XSS if malicious content is injected into front matter.
+**Learning:** Liquid templates do not auto-escape output. Developers must explicitly use the `| escape` filter for any variable that could contain user input or is rendered into HTML attributes/text.
+**Prevention:** Audit all Liquid output tags (`{{ ... }}`) and ensure `| escape` is applied unless raw HTML is explicitly intended and safe.
