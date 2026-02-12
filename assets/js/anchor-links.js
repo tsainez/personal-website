@@ -7,10 +7,11 @@
     function addAnchorLink(header) {
       if (!header.id || header.querySelector('.anchor-link')) return;
 
-      // Create the anchor link button
-      const anchor = document.createElement('button');
+      // Create the anchor link
+      const anchor = document.createElement('a');
       anchor.className = 'anchor-link';
-      anchor.innerHTML = '#';
+      anchor.textContent = '#';
+      anchor.href = '#' + header.id;
       anchor.setAttribute('aria-label', 'Copy link to section');
       anchor.setAttribute('title', 'Copy link to section');
 
@@ -46,7 +47,9 @@
     const header = anchor.parentElement;
     if (!header || !header.id) return;
 
-    e.preventDefault();
+    // Don't prevent default to allow URL hash update
+    // e.preventDefault();
+
     const url = window.location.origin + window.location.pathname + '#' + header.id;
 
     try {

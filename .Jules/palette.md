@@ -13,3 +13,7 @@
 ## 2025-05-21 - Accessible Post Navigation
 **Learning:** When using decorative characters like `«` or `»` in links, screen readers may announce them awkwardly. It's better to wrap them in `aria-hidden="true"` and provide a robust `aria-label` for the link itself.
 **Action:** For all "Previous/Next" navigation links, use `aria-label="Previous post: [Title]"` and hide decorative arrows from assistive technology.
+
+## 2025-05-22 - Anchor Links Implementation
+**Learning:** Implementing anchor links as `<button>` elements (solely for copy-to-clipboard functionality) breaks fundamental web expectations: users cannot "Open in new tab" or "Copy link address".
+**Action:** Always implement anchor links as `<a>` tags with valid `href` attributes. Use JavaScript to progressively enhance them with copy-to-clipboard functionality, allowing default navigation to occur seamlessly.
