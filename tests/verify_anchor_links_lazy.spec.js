@@ -31,7 +31,7 @@ test('anchor links are added lazily', async ({ page }) => {
   // Section 1 should have it immediately (it's in view)
   const anchor1 = page.locator('#section-1 .anchor-link');
   await expect(anchor1).toHaveCount(1);
-  await expect(anchor1).toHaveText('#');
+  await expect(anchor1.locator('svg')).toHaveCount(1);
 
   // Section 3 is far down, so it should NOT have it yet
   const anchor3 = page.locator('#section-3 .anchor-link');
