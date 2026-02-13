@@ -254,6 +254,7 @@ DEPENDENCIES
   jekyll-feed (~> 0.12)
   logger
   minima (~> 2.5)
+  nokogiri
   rake (~> 13.3)
   rspec (~> 3.12)
   tzinfo (>= 1, < 3)

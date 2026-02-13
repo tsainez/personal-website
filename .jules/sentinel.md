@@ -22,3 +22,8 @@
 **Vulnerability:** External link protection missed protocol-relative URLs (`//example.com`) and links with `target` before `href`.
 **Learning:** Regex-based HTML parsing is brittle. Simple patterns like `http|https` miss `//`. Fixed attribute order in regexes creates blind spots.
 **Prevention:** When using regex for HTML, explicitly test for protocol-relative URLs and variable attribute ordering/spacing.
+
+## 2025-05-23 - [Nokogiri for HTML Parsing in Jekyll Plugins]
+**Vulnerability:** Regex-based HTML manipulation is inherently brittle and prone to bypasses (e.g., unexpected attribute order, whitespace, newlines).
+**Learning:** Jekyll plugins can leveraging `Nokogiri` for robust HTML manipulation. Using `Nokogiri::HTML.parse(doc.output)` ensures the full document structure is respected and all matching elements are correctly processed regardless of formatting.
+**Prevention:** Replace regex-based HTML modification in Jekyll plugins with `Nokogiri` parsing to ensure security controls (like `rel="noopener"`) are reliably applied.
