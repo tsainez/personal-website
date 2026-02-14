@@ -11,8 +11,13 @@
       const anchor = document.createElement('button');
       anchor.className = 'anchor-link';
       anchor.innerHTML = '#';
-      anchor.setAttribute('aria-label', 'Copy link to section');
-      anchor.setAttribute('title', 'Copy link to section');
+
+      const headerText = header.textContent.trim();
+      const label = `Copy link to section: ${headerText}`;
+
+      anchor.setAttribute('aria-label', label);
+      anchor.setAttribute('title', label);
+      anchor.setAttribute('data-original-label', label);
 
       // Append it to the header
       header.appendChild(anchor);
@@ -62,7 +67,8 @@
 
       anchor._timeoutId = setTimeout(() => {
         anchor.classList.remove('copied');
-        anchor.setAttribute('aria-label', 'Copy link to section');
+        const originalLabel = anchor.getAttribute('data-original-label') || 'Copy link to section';
+        anchor.setAttribute('aria-label', originalLabel);
         delete anchor._timeoutId;
       }, 2000);
     } catch (err) {
