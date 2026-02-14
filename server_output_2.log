@@ -1,0 +1,2 @@
+127.0.0.1 - - [14/Feb/2026 05:52:30] "GET /tests/repro/repro_reading_progress.html HTTP/1.1" 200 -
+127.0.0.1 - - [14/Feb/2026 05:52:30] "GET /assets/js/reading-progress.js HTTP/1.1" 200 -

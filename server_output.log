@@ -1,0 +1,7 @@
+127.0.0.1 - - [14/Feb/2026 05:46:54] "HEAD /tests/repro/repro_reading_progress.html HTTP/1.1" 200 -
+127.0.0.1 - - [14/Feb/2026 05:48:41] "GET /tests/repro/repro_reading_progress.html HTTP/1.1" 200 -
+127.0.0.1 - - [14/Feb/2026 05:48:41] "GET /assets/js/reading-progress.js HTTP/1.1" 200 -
+127.0.0.1 - - [14/Feb/2026 05:49:28] "GET /tests/repro/repro_reading_progress.html HTTP/1.1" 200 -
+127.0.0.1 - - [14/Feb/2026 05:49:28] "GET /assets/js/reading-progress.js HTTP/1.1" 200 -
+127.0.0.1 - - [14/Feb/2026 05:49:45] "GET /tests/repro/repro_reading_progress.html HTTP/1.1" 200 -
+127.0.0.1 - - [14/Feb/2026 05:49:45] "GET /assets/js/reading-progress.js HTTP/1.1" 200 -
