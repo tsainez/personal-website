@@ -1,22 +1,33 @@
 Jekyll::Hooks.register [:documents, :pages], :post_render do |doc|
   next unless doc.output_ext == ".html"
 
-  # Regex to match external links (http, https, or protocol-relative //) with target="_blank"
-  # Support both orders: href before target, and target before href
-  regex_href_first = /<a\s+(?:[^>]*?\s+)?href=(["'])(?:(?:https?:)?\/\/)[^"']+\1(?:[^>]*?\s+)?target=(["'])_blank\2[^>]*>/
-  regex_target_first = /<a\s+(?:[^>]*?\s+)?target=(["'])_blank\1(?:[^>]*?\s+)?href=(["'])(?:(?:https?:)?\/\/)[^"']+\2[^>]*>/
+  require 'nokogiri'
 
-  [regex_href_first, regex_target_first].each do |regex|
-    doc.output.gsub!(regex) do |match|
-      if match.include?('rel=')
-        if match.include?('noopener') && match.include?('noreferrer')
-          match
-        else
-          match.sub(/rel=(["'])(.*?)\1/, 'rel=\1\2 noopener noreferrer\1')
-        end
-      else
-        match.sub('>', ' rel="noopener noreferrer">')
-      end
+  raw_html = doc.output
+  # heuristic to detect if it's a full document or a fragment
+  is_full_doc = raw_html.lstrip.start_with?("<!DOCTYPE", "<html")
+
+  if is_full_doc
+    page = Nokogiri::HTML(raw_html)
+  else
+    page = Nokogiri::HTML::DocumentFragment.parse(raw_html)
+  end
+
+  page.css('a[target="_blank"]').each do |link|
+    href = link['href']
+    next unless href
+
+    # Check for external links (http, https, or protocol-relative //)
+    if href =~ %r{\A(https?:|//)}
+      rel = link['rel'] || ''
+      parts = rel.split(/\s+/)
+
+      parts << 'noopener' unless parts.include?('noopener')
+      parts << 'noreferrer' unless parts.include?('noreferrer')
+
+      link['rel'] = parts.join(' ')
     end
   end
+
+  doc.output = page.to_html
 end
