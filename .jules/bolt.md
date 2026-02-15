@@ -11,3 +11,6 @@
 ## 2025-05-22 - Scroll Listener Replacement
 **Learning:** Even throttled scroll listeners cause main thread overhead. Using `IntersectionObserver` with an invisible "sentinel" element (absolute positioned at top) provides a jank-free way to toggle UI elements based on scroll position without polling.
 **Action:** Replace `window.onscroll` with `IntersectionObserver` observing injected sentinels for scroll-triggered visibility toggles.
+## 2025-02-18 - Scroll Event Layout Thrashing
+**Learning:** Reading layout properties (like `scrollHeight` and `clientHeight`) inside a scroll event handler causes forced reflows on every frame, even when throttled with `requestAnimationFrame`.
+**Action:** Cache layout dimensions outside the scroll handler and use `ResizeObserver` to update them only when the layout actually changes. This eliminates layout reads during the critical scroll path.
