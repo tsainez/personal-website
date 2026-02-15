@@ -23,6 +23,10 @@
 **Learning:** Regex-based HTML parsing is brittle. Simple patterns like `http|https` miss `//`. Fixed attribute order in regexes creates blind spots.
 **Prevention:** When using regex for HTML, explicitly test for protocol-relative URLs and variable attribute ordering/spacing.
 
+## 2025-02-19 - [Stored XSS in Jekyll Templates]
+**Vulnerability:** Jekyll templates (`_layouts/home.html`, `_layouts/post.html`) outputted `page.title`, `page.list_title`, and `page.author` without escaping, allowing Stored XSS if malicious content is injected into front matter.
+**Learning:** Liquid templates do not auto-escape output. Developers must explicitly use the `| escape` filter for any variable that could contain user input or is rendered into HTML attributes/text.
+**Prevention:** Audit all Liquid output tags (`{{ ... }}`) and ensure `| escape` is applied unless raw HTML is explicitly intended and safe.
 ## 2026-02-09 - [Stored XSS via Liquid Output]
 **Vulnerability:** Unescaped Liquid output variables (`page.title`, `page.author`, `site.email`) in layout files (`_layouts/home.html`, `_layouts/post.html`, `_includes/footer.html`) allowed for Stored XSS if malicious content was entered in configuration or front matter.
 **Learning:** Jekyll's default output `{{ variable }}` does NOT automatically escape HTML. This is a common pitfall compared to some other template engines. Developers must explicitly use the `| escape` filter for any user-controlled or potentially unsafe data.
