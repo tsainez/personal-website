@@ -17,3 +17,6 @@
 ## 2025-05-22 - External Link Indicators
 **Learning:** Static site generators like Jekyll often lack a built-in way to distinguish external links, leading to user confusion about navigation context.
 **Action:** Use a small, dependency-free JS utility to scan content areas (`.post-content`) for external hostnames and inject an icon + `.sr-only` text. This avoids regex-based build plugins which can be brittle and ensures consistent behavior across themes.
+## 2025-05-23 - Context-Aware Anchor Links
+**Learning:** Repeated interactive elements like "Copy link" buttons need unique accessible names to be useful. A generic "Copy link to section" label forces screen reader users to guess the context.
+**Action:** Append the associated section title to the `aria-label` (e.g., "Copy link to section: Introduction") and ensure this specific label is restored after any temporary state changes (like "Copied!").
