@@ -13,3 +13,7 @@
 ## 2025-05-21 - Accessible Post Navigation
 **Learning:** When using decorative characters like `«` or `»` in links, screen readers may announce them awkwardly. It's better to wrap them in `aria-hidden="true"` and provide a robust `aria-label` for the link itself.
 **Action:** For all "Previous/Next" navigation links, use `aria-label="Previous post: [Title]"` and hide decorative arrows from assistive technology.
+
+## 2025-05-23 - Context-Aware Anchor Links
+**Learning:** Repeated interactive elements like "Copy link" buttons need unique accessible names to be useful. A generic "Copy link to section" label forces screen reader users to guess the context.
+**Action:** Append the associated section title to the `aria-label` (e.g., "Copy link to section: Introduction") and ensure this specific label is restored after any temporary state changes (like "Copied!").
