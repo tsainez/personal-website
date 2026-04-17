@@ -43,5 +43,5 @@ gem "base64"
 group :test do
   gem "html-proofer", "~> 5.2"
   gem "rspec", "~> 3.12"
-  gem "rake", "~> 13.3"
+  gem "rake", "~> 13.4"
 end
