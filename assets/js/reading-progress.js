@@ -15,9 +15,11 @@
 
     // Performance Optimization: Use cached docHeight to avoid layout thrashing (reading scrollHeight/clientHeight)
     // during the critical scroll path.
-    const scrollPercent = cachedDocHeight > 0 ? (scrollTop / cachedDocHeight) * 100 : 0;
+    const scrollRatio = cachedDocHeight > 0 ? (scrollTop / cachedDocHeight) : 0;
 
-    progressBar.style.width = scrollPercent + '%';
+    // Bolt Optimization: Animate `transform` instead of `width` to avoid triggering reflow/repaint on every frame.
+    // GPU compositing makes this significantly faster and smoother.
+    progressBar.style.transform = `scaleX(${scrollRatio})`;
     ticking = false;
   }
 
