@@ -488,3 +488,20 @@ h6:hover .anchor-link {
     page-break-inside: avoid;
   }
 }
+
+/* Make mobile nav trigger accessible via keyboard */
+.site-nav .nav-trigger {
+  position: absolute;
+  clip: rect(0, 0, 0, 0);
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  white-space: nowrap;
+  display: block !important;
+}
+
+.site-nav .nav-trigger:focus-visible + label {
+  outline: 2px solid $focus-color;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
