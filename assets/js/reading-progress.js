@@ -17,7 +17,8 @@
     // during the critical scroll path.
     const scrollPercent = cachedDocHeight > 0 ? (scrollTop / cachedDocHeight) * 100 : 0;
 
-    progressBar.style.width = scrollPercent + '%';
+    // Performance Optimization: Use transform instead of width to avoid layout thrashing
+    progressBar.style.transform = `scaleX(${scrollPercent / 100})`;
     ticking = false;
   }
 

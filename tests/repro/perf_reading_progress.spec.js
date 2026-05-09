@@ -16,7 +16,7 @@ test('reading progress bar layout performance', async ({ page }) => {
         body { height: 5000px; margin: 0; }
         #reading-progress {
           position: fixed;
-          top: 0; left: 0; width: 0%; height: 4px; background: red;
+          top: 0; left: 0; width: 100%; transform: scaleX(0); transform-origin: left; height: 4px; background: red;
         }
       </style>
     </head>
@@ -71,8 +71,8 @@ test('reading progress bar layout performance', async ({ page }) => {
 
   // Check functional correctness
   const width = await progressBar.getAttribute('style');
-  expect(width).toMatch(/width: \d+(\.\d+)?%;/);
-  expect(width).not.toBe('width: 0%;');
+  expect(width).toMatch(/transform: scaleX\(\d+(\.\d+)?\);/);
+  expect(width).not.toBe('transform: scaleX(0);');
 
   // Check performance
   const reads = await page.evaluate(() => window.layoutReads);
