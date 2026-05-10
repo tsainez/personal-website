@@ -6,7 +6,7 @@ test('reading progress bar updates on scroll', async ({ page }) => {
   const progressBar = page.locator('#reading-progress');
 
   // Initial check
-  await expect(progressBar).toHaveCSS('width', '0px');
+  await expect(progressBar).toHaveCSS('transform', 'matrix(0, 0, 0, 1, 0, 0)');
 
   // Scroll using mouse wheel to simulate user interaction
   await page.mouse.wheel(0, 2000);
@@ -17,8 +17,8 @@ test('reading progress bar updates on scroll', async ({ page }) => {
   // Get the style attribute
   const style = await progressBar.getAttribute('style');
 
-  expect(style).toMatch(/width: \d+(\.\d+)?%;/);
-  expect(style).not.toBe('width: 0%;');
+  expect(style).toMatch(/transform: scaleX\(\d+(\.\d+)?\);/);
+  expect(style).not.toBe('transform: scaleX(0);');
 
   // Scroll to bottom
   await page.evaluate(() => {
@@ -28,5 +28,5 @@ test('reading progress bar updates on scroll', async ({ page }) => {
 
   await page.waitForTimeout(500);
   const styleEnd = await progressBar.getAttribute('style');
-  expect(styleEnd).toMatch(/width: 100(\.\d+)?%;/);
+  expect(styleEnd).toMatch(/transform: scaleX\(1(\.0+)?\);/);
 });

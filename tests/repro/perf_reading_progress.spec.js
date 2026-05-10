@@ -70,9 +70,9 @@ test('reading progress bar layout performance', async ({ page }) => {
   await page.waitForTimeout(500);
 
   // Check functional correctness
-  const width = await progressBar.getAttribute('style');
-  expect(width).toMatch(/width: \d+(\.\d+)?%;/);
-  expect(width).not.toBe('width: 0%;');
+  const transform = await progressBar.getAttribute('style');
+  expect(transform).toMatch(/transform: scaleX\(\d+(\.\d+)?\);/);
+  expect(transform).not.toBe('transform: scaleX(0);');
 
   // Check performance
   const reads = await page.evaluate(() => window.layoutReads);
