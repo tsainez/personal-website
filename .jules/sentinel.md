@@ -35,3 +35,8 @@
 **Vulnerability:** Regex-based HTML modification in plugins missed edge cases (unquoted attributes, case sensitivity, spacing).
 **Learning:** Even complex regexes are fragile against valid HTML variations. `Nokogiri` provides robust parsing but requires careful handling of document fragments vs full documents to avoid stripping tags.
 **Prevention:** Avoid regex for HTML manipulation. Use `Nokogiri::HTML.parse` for full docs and `Nokogiri::HTML::DocumentFragment.parse` for fragments.
+
+## 2026-05-10 - [Stored XSS via Unescaped URL Attributes]
+**Vulnerability:** User-controlled variables injected into `href` attributes (`mst.username`, `site.googleplus_username` in `_includes/social.html`) and the `lang` attribute (`_layouts/default.html`) were not fully escaped, allowing for attribute breakout and Stored XSS.
+**Learning:** While some variables were `cgi_escape`'d, others in structured data (like iterating through arrays in `_config.yml`) were missed. Furthermore, ANY variable injected into an HTML attribute MUST have the `| escape` filter applied to encode double quotes (`"`), even if it's already `cgi_escape`'d, to fully prevent breakout.
+**Prevention:** Always audit Jekyll templates for variables used inside HTML attributes. Ensure they are both URL-encoded (`cgi_escape`) if part of a URL, and always HTML-escaped (`escape`) to safely enclose them within quotes.
