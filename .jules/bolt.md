@@ -14,3 +14,7 @@
 ## 2025-02-18 - Scroll Event Layout Thrashing
 **Learning:** Reading layout properties (like `scrollHeight` and `clientHeight`) inside a scroll event handler causes forced reflows on every frame, even when throttled with `requestAnimationFrame`.
 **Action:** Cache layout dimensions outside the scroll handler and use `ResizeObserver` to update them only when the layout actually changes. This eliminates layout reads during the critical scroll path.
+
+## 2024-05-11 - Reading Progress Bar Hardware Acceleration
+**Learning:** Animating `width` on scroll-linked progress bars causes continuous layout thrashing (forced reflows) on the main thread, especially problematic on long content pages.
+**Action:** Always prefer `transform: scaleX()` combined with `transform-origin: left` and `will-change: transform` over `width` for progress bars. This offloads the animation to the GPU (compositor thread) and completely eliminates main-thread layout recalculations. When testing this via Playwright's `toHaveCSS()`, expect the computed `matrix()` value for `transform: scaleX(0)`.
