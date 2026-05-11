@@ -17,3 +17,7 @@
 ## 2025-05-23 - Context-Aware Anchor Links
 **Learning:** Repeated interactive elements like "Copy link" buttons need unique accessible names to be useful. A generic "Copy link to section" label forces screen reader users to guess the context.
 **Action:** Append the associated section title to the `aria-label` (e.g., "Copy link to section: Introduction") and ensure this specific label is restored after any temporary state changes (like "Copied!").
+
+## 2025-05-24 - Accessible Mobile Navigation in Minima
+**Learning:** The default Jekyll Minima theme hides the mobile navigation checkbox trigger (`.nav-trigger`) using `display: none`. This completely removes it from the accessibility tree, making it impossible for keyboard users to focus and open the mobile menu.
+**Action:** When using or customizing themes with CSS-only mobile menus (checkbox hack), never use `display: none` on the input. Instead, visually hide it using `clip` and `width/height: 1px`, and apply `:focus-visible` styles to the adjacent label so keyboard users have a visible focus indicator.
