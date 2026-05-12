@@ -513,6 +513,22 @@ h6:hover .anchor-link {
   }
 }
 
+/* Image map prototype */
+.image-map-frame {
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+.image-map-img {
+  display: block;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+
+  @media (prefers-color-scheme: dark) {
+    border-color: #333;
+  }
+}
+
 /* Barrel Roll Easter Egg */
 @keyframes barrel-roll {
   from {
