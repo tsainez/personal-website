@@ -4,49 +4,52 @@ title: Site Map
 permalink: /image-map/
 ---
 
-A prototype of a classic HTML image map. The illustration below uses `<img usemap>`
-with a `<map>` element containing three `<area>` hotspots — one rectangle, one
-circle, and one polygon. Each region links to a page on this site.
+A prototype in the spirit of an old Geocities or Neocities page: transparent
+PNG cutouts scattered around, each one a clickable link. The placeholder images
+below are stand-ins — drop in your own cutouts (PNGs with transparent
+backgrounds) and adjust positions in `assets/main.scss` to taste.
 
-<div class="image-map-frame" markdown="0">
-<img src="{{ '/assets/images/site-map.svg' | relative_url }}"
-     usemap="#site-map"
-     alt="Illustrated site map. Click the house for the About page, the sun for the home page, or the signpost for the essay."
-     width="800"
-     height="500"
-     class="image-map-img" />
-
-<map name="site-map">
-  <area shape="rect"
-        coords="80,180,300,420"
-        href="{{ '/about/' | relative_url }}"
-        alt="About"
-        title="About" />
-  <area shape="circle"
-        coords="680,110,55"
-        href="{{ '/' | relative_url }}"
-        alt="Home"
-        title="Home" />
-  <area shape="poly"
-        coords="430,230,600,230,640,290,600,350,430,350,390,290"
-        href="{% post_url 2025-07-15-who-is-driving %}"
-        alt="So, who's driving?"
-        title="So, who's driving?" />
-</map>
+<div class="cutout-collage" markdown="0">
+  <a class="cutout cutout--polaroid" href="{{ '/about/' | relative_url }}" title="About">
+    <img src="{{ '/assets/images/cutouts/polaroid.png' | relative_url }}" alt="About" width="240" height="280" />
+  </a>
+  <a class="cutout cutout--sticker" href="{% post_url 2025-07-15-who-is-driving %}" title="Read the blog">
+    <img src="{{ '/assets/images/cutouts/sticker.png' | relative_url }}" alt="Read the blog" width="220" height="220" />
+  </a>
+  <a class="cutout cutout--badge" href="{{ '/' | relative_url }}" title="Home">
+    <img src="{{ '/assets/images/cutouts/badge.png' | relative_url }}" alt="Home" width="180" height="180" />
+  </a>
+  <a class="cutout cutout--speech" href="mailto:{{ site.email }}" title="Email me">
+    <img src="{{ '/assets/images/cutouts/speech.png' | relative_url }}" alt="Email me" width="240" height="180" />
+  </a>
+  <a class="cutout cutout--button" href="https://github.com/{{ site.github_username }}" title="GitHub">
+    <img src="{{ '/assets/images/cutouts/button88.png' | relative_url }}" alt="GitHub" width="176" height="62" />
+  </a>
 </div>
 
 ### How it works
 
-The `<img>` tag references the image and points to a named `<map>` via the
-`usemap` attribute. Each `<area>` defines a clickable region in image-pixel
-coordinates:
+Each cutout is an `<a>` wrapping an `<img>`. The container `.cutout-collage`
+is `position: relative`, and each `.cutout` is `position: absolute` with its
+own offsets and rotation. There's no `<map>` or `<area>` involved — the click
+target is just the visible shape of the PNG, because transparent pixels don't
+register pointer events on an `<img>`.
 
-- `shape="rect"` — `coords="x1,y1,x2,y2"`
-- `shape="circle"` — `coords="cx,cy,radius"`
-- `shape="poly"` — `coords="x1,y1,x2,y2,...,xN,yN"`
+### To use your own photos
 
-### Known tradeoffs
+1. Cut out the subject in your photo editor of choice and export as PNG with a
+   transparent background.
+2. Save it to `assets/images/cutouts/`.
+3. Add another `<a class="cutout cutout--yourname">` block above, and add a
+   matching `.cutout--yourname` rule in `assets/main.scss` with `top`, `left`
+   (or `right`/`bottom`), and a `--rot` value for the tilt.
 
-Image map coordinates are pixel-based and don't scale when the image is resized
-by CSS, so this prototype renders the image at its natural 800×500 size. For a
-responsive version we'd reach for an SVG with embedded `<a>` elements instead.
+### Tradeoffs vs. classic `<map>`/`<area>`
+
+- ✅ Click targets follow the visible shape of each PNG — no pixel-coordinate
+  bookkeeping.
+- ✅ Hover/focus styling works natively (rotation, scale, glow).
+- ✅ Layout is real CSS, so it stays responsive.
+- ⚠️ A single irregular hotspot inside one image still needs `<map>`/`<area>`
+  (or an SVG with embedded `<a>` elements). This pattern is for collages of
+  separate cutouts, not regions within a single image.

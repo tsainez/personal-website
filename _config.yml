@@ -60,6 +60,7 @@ exclude:
   - package-lock.json
   - Rakefile
   - README.md
+  - scripts/
 
 include:
   - .well-known
