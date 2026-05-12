@@ -18,3 +18,7 @@
 ## 2025-02-19 - Layout vs Composite Animations on Scroll
 **Learning:** Animating geometry properties like `width` during scroll events forces the browser to recalculate layout and repaint on every frame, which is extremely expensive on the main thread.
 **Action:** Always animate using GPU-composited properties (like `transform: scaleX`) and `will-change: transform`. Set `width: 100%` and scale it from `0` to `1`. This offloads the work to the GPU and avoids main thread layout thrashing.
+
+## 2026-05-12 - Nokogiri Parsing Optimization in Jekyll Plugins
+**Learning:** Parsing full HTML documents with Nokogiri during Jekyll's `post_render` phase is extremely slow and significantly impacts build times. A large percentage of pages might not even contain the elements the plugin is looking for.
+**Action:** Use a fast, built-in Ruby Regex (e.g., `raw_html.match?(/<a[^>]+href\s*=\s*['"]?(?:https?:|\/\/)/i)`) to perform a cheap string check first. If the target elements aren't present, return early to bypass Nokogiri completely, drastically reducing overall site generation time.
