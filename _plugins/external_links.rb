@@ -4,6 +4,11 @@ Jekyll::Hooks.register [:documents, :pages], :post_render do |doc|
   require 'nokogiri'
 
   raw_html = doc.output
+
+  # Bolt Optimization: Fast fail with Regex before expensive Nokogiri parsing
+  # If the document doesn't contain target="_blank", there's nothing to do
+  next unless raw_html.match?(/target\s*=\s*['"]_blank['"]/i)
+
   # heuristic to detect if it's a full document or a fragment
   is_full_doc = raw_html.lstrip.start_with?("<!DOCTYPE", "<html")
 

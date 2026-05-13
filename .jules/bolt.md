@@ -18,3 +18,7 @@
 ## 2025-02-19 - Layout vs Composite Animations on Scroll
 **Learning:** Animating geometry properties like `width` during scroll events forces the browser to recalculate layout and repaint on every frame, which is extremely expensive on the main thread.
 **Action:** Always animate using GPU-composited properties (like `transform: scaleX`) and `will-change: transform`. Set `width: 100%` and scale it from `0` to `1`. This offloads the work to the GPU and avoids main thread layout thrashing.
+
+## 2025-10-24 - Optimizing Expensive Post-Render DOM Parsing
+**Learning:** Using heavy parsers like Nokogiri on every single HTML document during Jekyll's `post_render` phase is extremely slow. For modifications that only affect specific elements (like `<a target="_blank">`), parsing the entire DOM unconditionally for every page causes a major build performance bottleneck.
+**Action:** Use a fast String Regex check (e.g., `match?(/target\s*=\s*['"]_blank['"]/i)`) to determine if the document even contains the target pattern. Only instantiate the expensive DOM parser if the pattern exists, effectively skipping the overhead for the majority of pages.
