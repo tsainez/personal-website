@@ -513,6 +513,96 @@ h6:hover .anchor-link {
   }
 }
 
+/* Image map prototype — Geocities/Neocities style cutout collage */
+.cutout-collage {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  height: 520px;
+  margin: 2rem auto;
+  background: repeating-linear-gradient(
+    45deg,
+    #fff8e7,
+    #fff8e7 12px,
+    #fff1d3 12px,
+    #fff1d3 24px
+  );
+  border: 2px dashed #c8b890;
+  border-radius: 6px;
+
+  @media (prefers-color-scheme: dark) {
+    background: repeating-linear-gradient(
+      45deg,
+      #1f1f1f,
+      #1f1f1f 12px,
+      #262626 12px,
+      #262626 24px
+    );
+    border-color: #444;
+  }
+}
+
+.cutout {
+  --rot: 0deg;
+  position: absolute;
+  display: block;
+  transform: rotate(var(--rot));
+  transition: transform 0.2s ease, filter 0.2s ease;
+  filter: drop-shadow(2px 3px 0 rgba(0, 0, 0, 0.15));
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  &:hover,
+  &:focus-visible {
+    transform: rotate(var(--rot)) scale(1.08);
+    filter: drop-shadow(3px 5px 0 rgba(0, 0, 0, 0.25));
+    z-index: 10;
+  }
+}
+
+.cutout--polaroid { top: 20px;  left: 20px;   width: 200px; --rot: -6deg; }
+.cutout--sticker  { top: 40px;  right: 30px;  width: 180px; --rot: 8deg; }
+.cutout--badge    { top: 240px; left: 250px;  width: 150px; --rot: -12deg; }
+.cutout--speech   { bottom: 110px; right: 20px; width: 200px; --rot: 4deg; }
+.cutout--button   { bottom: 30px; left: 40px;  width: 180px; --rot: -2deg; }
+
+@media (max-width: 640px) {
+  .cutout-collage {
+    height: auto;
+    padding: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .cutout {
+    position: static;
+    width: auto;
+
+    img {
+      width: auto;
+      max-width: 45vw;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cutout {
+    transition: none;
+
+    &:hover,
+    &:focus-visible {
+      transform: rotate(var(--rot));
+    }
+  }
+}
+
 /* Barrel Roll Easter Egg */
 @keyframes barrel-roll {
   from {
