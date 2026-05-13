@@ -10,20 +10,20 @@
 <script src="/assets/js/security.js"></script>
   <meta name="referrer" content="strict-origin-when-cross-origin">
 <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>About | Tony Sainez</title>
+<title>Site Map | Tony Sainez</title>
 <meta name="generator" content="Jekyll v4.4.1">
-<meta property="og:title" content="About">
+<meta property="og:title" content="Site Map">
 <meta property="og:locale" content="en_US">
 <meta name="description" content="© Anthony Sainez 2025">
 <meta property="og:description" content="© Anthony Sainez 2025">
-<link rel="canonical" href="https://tonysainez.com/about/">
-<meta property="og:url" content="https://tonysainez.com/about/">
+<link rel="canonical" href="https://tonysainez.com/image-map/">
+<meta property="og:url" content="https://tonysainez.com/image-map/">
 <meta property="og:site_name" content="Tony Sainez">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary">
-<meta property="twitter:title" content="About">
+<meta property="twitter:title" content="Site Map">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebSite","description":"© Anthony Sainez 2025","headline":"About","name":"Tony Sainez","url":"https://tonysainez.com/about/"}</script>
+{"@context":"https://schema.org","@type":"WebPage","description":"© Anthony Sainez 2025","headline":"Site Map","url":"https://tonysainez.com/image-map/"}</script>
 <!-- End Jekyll SEO tag -->
 <!-- Performance optimization: DNS prefetch for external links --><link rel="dns-prefetch" href="https://github.com">
 <link rel="dns-prefetch" href="https://www.linkedin.com">
@@ -47,7 +47,7 @@
         </label>
 
         <div class="trigger">
-<a class="page-link" href="/about/" aria-current="page">About</a><a class="page-link" href="/image-map/">Site Map</a>
+<a class="page-link" href="/about/">About</a><a class="page-link" href="/image-map/" aria-current="page">Site Map</a>
 </div>
       </nav>
 </div>
@@ -57,13 +57,64 @@
         <article class="post">
 
   <header class="post-header">
-    <h1 class="post-title">About</h1>
+    <h1 class="post-title">Site Map</h1>
   </header>
 
   <div class="post-content">
-    <p>Hello, I’m Tony Sainez. Right now, I’m working on improving autonomous vehicle performance through <strong>hands-on testing at various proving grounds</strong>. I got my start working for Waymo’s testing team in Atwater, and then moved to Zoox.</p>
+    <p>A prototype in the spirit of an old Geocities or Neocities page: transparent
+PNG cutouts scattered around, each one a clickable link. The placeholder images
+below are stand-ins — drop in your own cutouts (PNGs with transparent
+backgrounds) and adjust positions in <code class="language-plaintext highlighter-rouge">assets/main.scss</code> to taste.</p>
 
-<p>I never expected to be in the automotive industry, but this is great niche for me. I’ve been obsessed with <strong>artificial intelligence</strong> since I was a teenager, when I found out that they could beat me at videogames.</p>
+<div class="cutout-collage">
+  <a class="cutout cutout--polaroid" href="/about/" title="About">
+    <img src="/assets/images/cutouts/polaroid.png" alt="About" width="240" height="280">
+  </a>
+  <a class="cutout cutout--sticker" href="/essay/ai/2025/07/15/who-is-driving.html" title="Read the blog">
+    <img src="/assets/images/cutouts/sticker.png" alt="Read the blog" width="220" height="220">
+  </a>
+  <a class="cutout cutout--badge" href="/" title="Home">
+    <img src="/assets/images/cutouts/badge.png" alt="Home" width="180" height="180">
+  </a>
+  <a class="cutout cutout--speech" href="mailto:tsainez@gmail.com" title="Email me">
+    <img src="/assets/images/cutouts/speech.png" alt="Email me" width="240" height="180">
+  </a>
+  <a class="cutout cutout--button" href="https://github.com/tsainez" title="GitHub">
+    <img src="/assets/images/cutouts/button88.png" alt="GitHub" width="176" height="62">
+  </a>
+</div>
+
+<h3 id="how-it-works">How it works</h3>
+
+<p>Each cutout is an <code class="language-plaintext highlighter-rouge">&lt;a&gt;</code> wrapping an <code class="language-plaintext highlighter-rouge">&lt;img&gt;</code>. The container <code class="language-plaintext highlighter-rouge">.cutout-collage</code>
+is <code class="language-plaintext highlighter-rouge">position: relative</code>, and each <code class="language-plaintext highlighter-rouge">.cutout</code> is <code class="language-plaintext highlighter-rouge">position: absolute</code> with its
+own offsets and rotation. There’s no <code class="language-plaintext highlighter-rouge">&lt;map&gt;</code> or <code class="language-plaintext highlighter-rouge">&lt;area&gt;</code> involved — the click
+target is just the visible shape of the PNG, because transparent pixels don’t
+register pointer events on an <code class="language-plaintext highlighter-rouge">&lt;img&gt;</code>.</p>
+
+<h3 id="to-use-your-own-photos">To use your own photos</h3>
+
+<ol>
+  <li>Cut out the subject in your photo editor of choice and export as PNG with a
+transparent background.</li>
+  <li>Save it to <code class="language-plaintext highlighter-rouge">assets/images/cutouts/</code>.</li>
+  <li>Add another <code class="language-plaintext highlighter-rouge">&lt;a class="cutout cutout--yourname"&gt;</code> block above, and add a
+matching <code class="language-plaintext highlighter-rouge">.cutout--yourname</code> rule in <code class="language-plaintext highlighter-rouge">assets/main.scss</code> with <code class="language-plaintext highlighter-rouge">top</code>, <code class="language-plaintext highlighter-rouge">left</code>
+(or <code class="language-plaintext highlighter-rouge">right</code>/<code class="language-plaintext highlighter-rouge">bottom</code>), and a <code class="language-plaintext highlighter-rouge">--rot</code> value for the tilt.</li>
+</ol>
+
+<h3 id="tradeoffs-vs-classic-maparea">Tradeoffs vs. classic <code class="language-plaintext highlighter-rouge">&lt;map&gt;</code>/<code class="language-plaintext highlighter-rouge">&lt;area&gt;</code>
+</h3>
+
+<ul>
+  <li>✅ Click targets follow the visible shape of each PNG — no pixel-coordinate
+bookkeeping.</li>
+  <li>✅ Hover/focus styling works natively (rotation, scale, glow).</li>
+  <li>✅ Layout is real CSS, so it stays responsive.</li>
+  <li>⚠️ A single irregular hotspot inside one image still needs <code class="language-plaintext highlighter-rouge">&lt;map&gt;</code>/<code class="language-plaintext highlighter-rouge">&lt;area&gt;</code>
+(or an SVG with embedded <code class="language-plaintext highlighter-rouge">&lt;a&gt;</code> elements). This pattern is for collages of
+separate cutouts, not regions within a single image.</li>
+</ul>
 
   </div>
 
