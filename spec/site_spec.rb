@@ -7,7 +7,10 @@ describe 'Jekyll Site' do
       :check_img_http => true,
       :disable_external => false, # Enable external link checking
       :enforce_https => false,
-      :ignore_urls => [],
+      # Ignore self-referencing absolute URLs (e.g. canonical/og:url emitted by
+      # jekyll-seo-tag). New pages 404 here until they're deployed to production,
+      # so we treat them as internal links rather than fetching them.
+      :ignore_urls => [%r{\Ahttps?://tonysainez\.com(/|\z)}],
       :hydra => { :max_concurrency => 5 },
       :typhoeus => {
         :connecttimeout => 15,
