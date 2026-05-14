@@ -19,10 +19,10 @@ backgrounds) and adjust positions in `assets/main.scss` to taste.
   <a class="cutout cutout--badge" href="{{ '/' | relative_url }}" title="Home">
     <img src="{{ '/assets/images/cutouts/badge.png' | relative_url }}" alt="Home" width="180" height="180" />
   </a>
-  <a class="cutout cutout--speech" href="mailto:{{ site.email }}" title="Email me">
+  <a class="cutout cutout--speech" href="mailto:{{ site.email | escape }}" title="Email me">
     <img src="{{ '/assets/images/cutouts/speech.png' | relative_url }}" alt="Email me" width="240" height="180" />
   </a>
-  <a class="cutout cutout--button" href="https://github.com/{{ site.github_username }}" title="GitHub">
+  <a class="cutout cutout--button" href="https://github.com/{{ site.github_username | cgi_escape | escape }}" title="GitHub">
     <img src="{{ '/assets/images/cutouts/button88.png' | relative_url }}" alt="GitHub" width="176" height="62" />
   </a>
 </div>
