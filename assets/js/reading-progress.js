@@ -31,13 +31,22 @@
   }
 
   // Recalculate dimensions when layout changes
+  let resizeTimeout;
   function onResize() {
-    calculateDocHeight();
-    // We update progress here too just in case the resize changed the percentage
-    if (!ticking) {
-      window.requestAnimationFrame(updateProgress);
-      ticking = true;
+    // Bolt Optimization: Debounce resize event to prevent layout thrashing
+    // Window resizes trigger many events per second. Calculating docHeight requires
+    // reading scrollHeight/clientHeight which forces a synchronous layout reflow.
+    if (resizeTimeout) {
+      clearTimeout(resizeTimeout);
     }
+    resizeTimeout = setTimeout(() => {
+      calculateDocHeight();
+      // We update progress here too just in case the resize changed the percentage
+      if (!ticking) {
+        window.requestAnimationFrame(updateProgress);
+        ticking = true;
+      }
+    }, 100);
   }
 
   window.addEventListener('scroll', onScroll, { passive: true });

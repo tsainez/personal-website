@@ -22,3 +22,7 @@
 ## 2026-05-12 - Nokogiri Parsing Optimization in Jekyll Plugins
 **Learning:** Parsing full HTML documents with Nokogiri during Jekyll's `post_render` phase is extremely slow and significantly impacts build times. A large percentage of pages might not even contain the elements the plugin is looking for.
 **Action:** Use a fast, built-in Ruby Regex (e.g., `raw_html.match?(/<a[^>]+href\s*=\s*['"]?(?:https?:|\/\/)/i)`) to perform a cheap string check first. If the target elements aren't present, return early to bypass Nokogiri completely, drastically reducing overall site generation time.
+
+## 2025-05-20 - Resize Event Layout Thrashing
+**Learning:** Reading layout properties (like `scrollHeight` and `clientHeight`) inside an undebounced window `resize` handler causes massive layout thrashing because the browser fires multiple events per second during a continuous resize, forcing synchronous reflows each time.
+**Action:** Always debounce resize event handlers that read or write layout properties using `setTimeout` (e.g., 100ms delay) to coalesce the events and reduce layout recalculations to a minimum.
