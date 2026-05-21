@@ -48,3 +48,8 @@
 **Vulnerability:** Unescaped Liquid output variables (`site.email` and `site.github_username`) in Markdown files (`image-map.markdown`) allowed for Stored XSS if malicious content was entered in configuration, particularly when injected directly into attributes or URLs.
 **Learning:** In Jekyll, Markdown files with front matter parse Liquid tags before rendering HTML. Any user-controlled configuration variables (like `site.email` or `site.github_username`) injected into HTML attributes within these content files must be explicitly escaped (e.g., using `escape` or `cgi_escape`) to prevent Stored XSS.
 **Prevention:** Always audit Jekyll content files for raw variable output in attributes and URLs. Apply `| cgi_escape | escape` to variables in URLs, and `| escape` to general attribute variables.
+
+## 2026-05-15 - [Stored XSS via Attribute Breakout from relative_url]
+**Vulnerability:** The Jekyll `relative_url` filter does not escape HTML entities, leaving output variables like `page.url`, `post.url`, and `my_page.url` vulnerable to Stored XSS via attribute breakout when injected directly into `href` attributes.
+**Learning:** Even built-in filters that generate URLs (`relative_url`, `absolute_url`) do not automatically neutralize unsafe characters in front matter or permalinks. This allows an attacker to inject `"` followed by event handlers or scripts.
+**Prevention:** Always chain the `escape` filter after `relative_url` (e.g., `{{ page.url | relative_url | escape }}`) when the output is placed inside an HTML attribute to prevent attribute breakout.
