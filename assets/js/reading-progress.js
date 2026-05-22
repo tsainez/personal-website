@@ -31,13 +31,22 @@
   }
 
   // Recalculate dimensions when layout changes
+  // Bolt Optimization: Debounce the resize handler to prevent
+  // excessive layout reads (scrollHeight/clientHeight) when the window
+  // is being actively resized or when ResizeObserver fires rapidly.
+  let resizeTimeout;
   function onResize() {
-    calculateDocHeight();
-    // We update progress here too just in case the resize changed the percentage
-    if (!ticking) {
-      window.requestAnimationFrame(updateProgress);
-      ticking = true;
+    if (resizeTimeout) {
+      clearTimeout(resizeTimeout);
     }
+    resizeTimeout = setTimeout(() => {
+      calculateDocHeight();
+      // We update progress here too just in case the resize changed the percentage
+      if (!ticking) {
+        window.requestAnimationFrame(updateProgress);
+        ticking = true;
+      }
+    }, 150); // 150ms debounce
   }
 
   window.addEventListener('scroll', onScroll, { passive: true });
