@@ -25,7 +25,7 @@ layout: default
           {% endif %}
         </span>
         <h3>
-          <a class="post-link" href="{{ post.url | relative_url }}">
+          <a class="post-link" href="{{ post.url | relative_url | escape }}">
             {{ post.title | escape }}
           </a>
         </h3>
@@ -36,7 +36,7 @@ layout: default
       {%- endfor -%}
     </ul>
 
-    <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | relative_url }}">via RSS</a></p>
+    <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | relative_url | escape }}">via RSS</a></p>
   {%- endif -%}
 
 </div>
