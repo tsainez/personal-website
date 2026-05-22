@@ -19,3 +19,7 @@
 ## 2026-05-17 - Skip Link Targets Must Be Focusable
 **Learning:** A "Skip to content" link visually scrolls the user to the main content, but unless the target container has `tabindex="-1"`, programmatic focus and screen reader context remain at the top of the page. Without this, the next `Tab` press starts the navigation cycle over again, defeating the purpose of the skip link.
 **Action:** Always add `tabindex="-1"` to the container element referenced by a skip link's `href` (e.g., `<main id="main-content" tabindex="-1">`).
+
+## 2026-05-22 - Checkbox Hack Labels, Tooltips, and Decorative SVGs
+**Learning:** When using the "checkbox hack" for elements like mobile navigation, `aria-label` must be placed directly on the `<input type="checkbox">` rather than the visual `<label>`. Screen readers expect the input to have the accessible name. To provide native tooltips for sighted users on hover for icon-only buttons (like back-to-top or navigation toggles), a `title` attribute matching the accessible name should be used. Additionally, any decorative `<svg>` within an interactive element that already has accessible text (such as social media links with usernames) should have `aria-hidden="true"` to prevent redundant screen reader announcements.
+**Action:** Ensure custom toggle patterns place ARIA attributes on the actual input element, always include `title` attributes for icon-only buttons, and proactively hide decorative icons using `aria-hidden="true"` when accompanying text is present.
