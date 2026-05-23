@@ -22,3 +22,11 @@
 ## 2026-05-12 - Nokogiri Parsing Optimization in Jekyll Plugins
 **Learning:** Parsing full HTML documents with Nokogiri during Jekyll's `post_render` phase is extremely slow and significantly impacts build times. A large percentage of pages might not even contain the elements the plugin is looking for.
 **Action:** Use a fast, built-in Ruby Regex (e.g., `raw_html.match?(/<a[^>]+href\s*=\s*['"]?(?:https?:|\/\/)/i)`) to perform a cheap string check first. If the target elements aren't present, return early to bypass Nokogiri completely, drastically reducing overall site generation time.
+
+## 2026-05-23 - Playwright Testing with Excluded Directories
+**Learning:** The `tests/` directory is explicitly excluded in Jekyll's `_config.yml`. Therefore, Playwright tests running against the local server cannot access files located within the `tests/` directory via HTTP (e.g., `http://localhost:8081/tests/repro/repro_reading_progress.html`) because Jekyll will return a 404, causing Playwright navigations to timeout or fail.
+**Action:** When writing Playwright performance tests, either temporarily un-exclude the `tests/` directory locally, or inject the HTML string directly into the page via `page.setContent()` rather than relying on HTTP navigation to a test fixture.
+
+## 2026-05-23 - Debouncing Window Resize Handlers
+**Learning:** Window `resize` events fire continuously during user interaction. Triggering expensive DOM operations or layout recalculations unconditionally on resize leads to severe layout thrashing (e.g., over 140 recalculations in a simple drag).
+**Action:** Wrap resize event handlers in a debounce function (e.g., using `setTimeout` and `clearTimeout`) to ensure the expensive logic only executes once the user has finished resizing, dropping layout reads to ~2.
