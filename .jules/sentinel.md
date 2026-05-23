@@ -53,3 +53,7 @@
 **Vulnerability:** The Jekyll `relative_url` filter does not escape HTML entities, leaving output variables like `page.url`, `post.url`, and `my_page.url` vulnerable to Stored XSS via attribute breakout when injected directly into `href` attributes.
 **Learning:** Even built-in filters that generate URLs (`relative_url`, `absolute_url`) do not automatically neutralize unsafe characters in front matter or permalinks. This allows an attacker to inject `"` followed by event handlers or scripts.
 **Prevention:** Always chain the `escape` filter after `relative_url` (e.g., `{{ page.url | relative_url | escape }}`) when the output is placed inside an HTML attribute to prevent attribute breakout.
+## 2026-05-25 - [Stored XSS via Liquid Output in URL Attributes]
+**Vulnerability:** Unescaped Liquid output variables for URLs (e.g., `page.url`, `post.url`, `my_page.url`) were directly injected into HTML attributes (like `href`) in layout files (`_layouts/home.html`, `_layouts/post.html`, `_includes/header.html`). If a crafted `permalink` were defined in the front matter, it could lead to attribute breakout and Stored XSS.
+**Learning:** Liquid template engines, unlike some others, do not auto-escape their output by default. Any variable injected into an HTML attribute, including path or URL variables generated from potentially user-controllable input (like front matter), needs to be explicitly escaped.
+**Prevention:** Always append the `| escape` filter for any Liquid variable injected into HTML attributes unless it is strictly hardcoded and trusted.
