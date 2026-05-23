@@ -3,6 +3,7 @@
   if (!progressBar) return;
 
   let ticking = false;
+  let resizeTimeout;
   let cachedDocHeight = 0;
 
   function calculateDocHeight() {
@@ -32,12 +33,19 @@
 
   // Recalculate dimensions when layout changes
   function onResize() {
-    calculateDocHeight();
-    // We update progress here too just in case the resize changed the percentage
-    if (!ticking) {
-      window.requestAnimationFrame(updateProgress);
-      ticking = true;
-    }
+    // Bolt Optimization: Debounce resize events to prevent layout thrashing
+    // Resize events can fire rapidly. Recalculating document height on every
+    // resize event causes severe layout thrashing (forced synchronous layout).
+    // By debouncing, we only calculate once the user has finished resizing.
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      calculateDocHeight();
+      // We update progress here too just in case the resize changed the percentage
+      if (!ticking) {
+        window.requestAnimationFrame(updateProgress);
+        ticking = true;
+      }
+    }, 100); // 100ms debounce
   }
 
   window.addEventListener('scroll', onScroll, { passive: true });
