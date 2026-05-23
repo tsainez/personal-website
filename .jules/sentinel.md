@@ -48,3 +48,12 @@
 **Vulnerability:** Unescaped Liquid output variables (`site.email` and `site.github_username`) in Markdown files (`image-map.markdown`) allowed for Stored XSS if malicious content was entered in configuration, particularly when injected directly into attributes or URLs.
 **Learning:** In Jekyll, Markdown files with front matter parse Liquid tags before rendering HTML. Any user-controlled configuration variables (like `site.email` or `site.github_username`) injected into HTML attributes within these content files must be explicitly escaped (e.g., using `escape` or `cgi_escape`) to prevent Stored XSS.
 **Prevention:** Always audit Jekyll content files for raw variable output in attributes and URLs. Apply `| cgi_escape | escape` to variables in URLs, and `| escape` to general attribute variables.
+
+## 2025-02-21 - [Stored XSS via relative_url in Jekyll]
+**Vulnerability:** Unescaped variables passed through the `relative_url` filter in Jekyll (e.g., `post.url | relative_url`) allowed for Stored XSS via attribute breakout when injected into HTML attributes like `href`.
+**Learning:** The `relative_url` filter in Jekyll does not automatically HTML-escape its output. If the input variable is user-controlled (e.g., a `permalink` in frontmatter), malicious characters can break out of the HTML attribute and execute arbitrary scripts.
+**Prevention:** Always append the `| escape` filter after `relative_url` (e.g., `{{ page.url | relative_url | escape }}`) when the resulting URL is used within an HTML attribute.
+## 2026-05-25 - [Stored XSS via Liquid Output in URL Attributes]
+**Vulnerability:** Unescaped Liquid output variables for URLs (e.g., `page.url`, `post.url`, `my_page.url`) were directly injected into HTML attributes (like `href`) in layout files (`_layouts/home.html`, `_layouts/post.html`, `_includes/header.html`). If a crafted `permalink` were defined in the front matter, it could lead to attribute breakout and Stored XSS.
+**Learning:** Liquid template engines, unlike some others, do not auto-escape their output by default. Any variable injected into an HTML attribute, including path or URL variables generated from potentially user-controllable input (like front matter), needs to be explicitly escaped.
+**Prevention:** Always append the `| escape` filter for any Liquid variable injected into HTML attributes unless it is strictly hardcoded and trusted.
