@@ -3,7 +3,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   {%- include csp.html -%}
-  <script src="{{ '/assets/js/security.js' | relative_url }}"></script>
+  <script src="{{ '/assets/js/security.js' | relative_url | escape }}"></script>
   <meta name="referrer" content="strict-origin-when-cross-origin">
   {%- seo -%}
   <!-- Performance optimization: DNS prefetch for external links -->
@@ -17,8 +17,8 @@
   <link rel="dns-prefetch" href="https://twitter.com">
   {%- endif -%}
   <!-- Performance optimization: Preload critical CSS -->
-  <link rel="preload" href="{{ "/assets/main.css" | relative_url }}" as="style">
-  <link rel="stylesheet" href="{{ "/assets/main.css" | relative_url }}">
+  <link rel="preload" href="{{ "/assets/main.css" | relative_url | escape }}" as="style">
+  <link rel="stylesheet" href="{{ "/assets/main.css" | relative_url | escape }}">
   {%- feed_meta -%}
   {%- if jekyll.environment == 'production' and site.google_analytics -%}
     {%- include google-analytics.html -%}
