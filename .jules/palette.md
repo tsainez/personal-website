@@ -29,3 +29,7 @@
 ## 2026-10-31 - Checkbox Hack Accessibility
 **Learning:** For accessible 'checkbox hack' implementations (e.g., mobile navigation via hidden checkbox), the `aria-label` must be placed directly on the `<input type="checkbox">` element, not its visual `<label>`, to ensure proper screen reader announcements. Adding `title` attributes to icon-only buttons provides native tooltips for sighted users.
 **Action:** Always check ARIA label placement for hidden inputs acting as toggles, and use `title` attributes for icon-only interactions.
+
+## 2026-11-01 - 404 Page Escape Hatches
+**Learning:** A 404 page without clear next steps creates a dead end for users, leading to frustration and abandonment. A simple link back to the homepage provides an essential "escape hatch," significantly improving the user experience during an error state.
+**Action:** Always ensure that error states (like 404 pages) and empty states include a clear, actionable path forward, such as a link to the homepage or main dashboard.
