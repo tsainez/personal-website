@@ -45,7 +45,11 @@
     if (!block) return;
 
     const code = block.querySelector('code');
-    const text = code ? code.innerText : '';
+    // Bolt Optimization: Use `textContent` instead of `innerText`.
+    // Reading `innerText` forces a synchronous layout calculation (reflow) because it is layout-aware
+    // (e.g., ignores display:none elements). `textContent` just reads the raw text nodes,
+    // which is significantly faster and doesn't trigger layout thrashing, especially for large code blocks.
+    const text = code ? code.textContent : '';
 
     try {
       await navigator.clipboard.writeText(text);
