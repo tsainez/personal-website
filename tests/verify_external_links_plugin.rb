@@ -51,3 +51,4 @@ test("Target First", '<a target="_blank" href="https://reversed.com">Link</a>', 
 test("Target First Proto Relative", '<a target="_blank" href="//reversed-proto.com">Link</a>', true)
 test("Internal Link", '<a href="/internal" target="_blank">Link</a>', false)
 test("Existing Rel", '<a href="https://google.com" target="_blank" rel="nofollow">Link</a>', true)
+test("Leading Space HTTPS", '<a href=" https://google.com" target="_blank">Link</a>', true)
