@@ -57,3 +57,8 @@
 **Vulnerability:** Unescaped Liquid output variables for URLs (e.g., `page.url`, `post.url`, `my_page.url`) were directly injected into HTML attributes (like `href`) in layout files (`_layouts/home.html`, `_layouts/post.html`, `_includes/header.html`). If a crafted `permalink` were defined in the front matter, it could lead to attribute breakout and Stored XSS.
 **Learning:** Liquid template engines, unlike some others, do not auto-escape their output by default. Any variable injected into an HTML attribute, including path or URL variables generated from potentially user-controllable input (like front matter), needs to be explicitly escaped.
 **Prevention:** Always append the `| escape` filter for any Liquid variable injected into HTML attributes unless it is strictly hardcoded and trusted.
+
+## 2026-06-03 - [Case-Sensitive Filter Bypass in Nokogiri]
+**Vulnerability:** The external links plugin relied on Nokogiri's `a[target="_blank"]` CSS selector, which is strictly case-sensitive. This meant links authored with `target="_BLANK"` bypassed the filter and were not assigned `rel="noopener noreferrer"`, leaving them vulnerable to reverse tabnabbing.
+**Learning:** HTML attribute values like `target` are often treated case-insensitively by browsers but are evaluated strictly by parser selectors unless specifically configured. In Nokogiri, CSS selectors are case-sensitive.
+**Prevention:** Replaced the CSS selector with an XPath query using the `translate()` function to enforce case-insensitive matching (`//a[translate(@target, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")="_blank"]`), ensuring consistent and robust protection regardless of authored case.
