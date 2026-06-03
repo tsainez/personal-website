@@ -30,3 +30,11 @@
 ## 2026-05-24 - Text Extraction Layout Thrashing
 **Learning:** Reading `innerText` forces a synchronous layout calculation (reflow) because it is layout-aware (e.g., it ignores elements with `display: none` and respects CSS styling). When copying text from large code blocks on complex pages, this causes significant main thread blocking and layout thrashing.
 **Action:** Use `textContent` instead of `innerText` when extracting text from syntax-highlighted code blocks or when layout-aware text extraction isn't strictly necessary. `textContent` directly reads DOM text nodes without invoking the styling/layout engine, which is orders of magnitude faster.
+
+## 2026-06-03 - String Allocation Optimization
+**Learning:** When performing string checks that require allocating new strings (like `lstrip`) on multi-megabyte HTML strings in Jekyll hooks, Ruby can waste significant time in garbage collection and memory allocation.
+**Action:** Always slice the string to a reasonable upper bound (e.g., `raw_html[0, 4096]`) before performing such checks to bypass allocating identical, massive strings in memory.
+
+## 2026-06-03 - Guard Clause Safety
+**Learning:** An overly aggressive heuristic in an early-return check (such as `raw_html.include?('target="_blank"')`) can break the plugin entirely if the plugin's job is precisely to add the missing attributes.
+**Action:** When creating early exits, ensure that the condition exactly matches the conditions the plugin needs to operate, without accidentally filtering out valid inputs.
