@@ -12,7 +12,10 @@ Jekyll::Hooks.register [:documents, :pages], :post_render do |doc|
   next unless raw_html.match?(/<a[^>]+href\s*=\s*['"]?(?:https?:|\/\/)/i)
 
   # heuristic to detect if it's a full document or a fragment
-  is_full_doc = raw_html.lstrip.start_with?("<!DOCTYPE", "<html")
+  # ⚡ Bolt Optimization: Use `match?` with `\A\s*` instead of `lstrip.start_with?`
+  # `lstrip` allocates a massive new string (O(N) memory), while `match?` operates
+  # in-place with minimal memory allocation, significantly reducing garbage collection overhead.
+  is_full_doc = raw_html.match?(/\A\s*(?:<!DOCTYPE|<html)/i)
 
   if is_full_doc
     page = Nokogiri::HTML(raw_html)
