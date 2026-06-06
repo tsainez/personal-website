@@ -30,3 +30,7 @@
 ## 2026-05-24 - Text Extraction Layout Thrashing
 **Learning:** Reading `innerText` forces a synchronous layout calculation (reflow) because it is layout-aware (e.g., it ignores elements with `display: none` and respects CSS styling). When copying text from large code blocks on complex pages, this causes significant main thread blocking and layout thrashing.
 **Action:** Use `textContent` instead of `innerText` when extracting text from syntax-highlighted code blocks or when layout-aware text extraction isn't strictly necessary. `textContent` directly reads DOM text nodes without invoking the styling/layout engine, which is orders of magnitude faster.
+
+## 2026-06-06 - Large String Allocation Optimization
+**Learning:** Performing string prefix checks on large strings (such as `doc.output` in Jekyll) using `lstrip.start_with?` allocates massive duplicate strings in memory, causing significant garbage collection overhead.
+**Action:** Always use the highly optimized `String#match?` method with a regular expression (like `/\A\s*(?:<!DOCTYPE|<html)/i`) to evaluate the string in-place with minimal garbage collection overhead.
