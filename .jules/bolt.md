@@ -26,3 +26,7 @@
 ## 2026-05-19 - Resize Event Layout Thrashing
 **Learning:** Resize events can fire rapidly. Recalculating document height on every resize event causes severe layout thrashing (forced synchronous layout), especially when reading properties like `scrollHeight` and `clientHeight`.
 **Action:** Debounce resize events so that layout properties are only calculated once the user has finished resizing, drastically reducing layout thrashing.
+
+## 2026-05-24 - Text Extraction Layout Thrashing
+**Learning:** Reading `innerText` forces a synchronous layout calculation (reflow) because it is layout-aware (e.g., it ignores elements with `display: none` and respects CSS styling). When copying text from large code blocks on complex pages, this causes significant main thread blocking and layout thrashing.
+**Action:** Use `textContent` instead of `innerText` when extracting text from syntax-highlighted code blocks or when layout-aware text extraction isn't strictly necessary. `textContent` directly reads DOM text nodes without invoking the styling/layout engine, which is orders of magnitude faster.
