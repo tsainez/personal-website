@@ -33,3 +33,11 @@
 ## 2026-06-05 - 404 Page Escape Hatch
 **Learning:** Dead-end states like 404 pages disrupt user flow and cause frustration if they offer no way out. Providing an explicit escape hatch is critical to good UX.
 **Action:** Always provide a clear, visible link to the homepage or a relevant starting point on error pages or empty states to prevent user dead-ends.
+
+## 2026-05-24 - Empty State Escape Hatches
+**Learning:** A 404 page acts as an empty state. Without a clear path forward, it acts as a "dead-end" that can frustrate users and increase bounce rates.
+**Action:** Always provide an explicit, helpful call-to-action (like returning to the homepage) in error pages and empty states to guide users back to the primary flow.
+
+## 2026-11-04 - Clear Escape Hatches
+**Learning:** When users hit a dead-end like a 404 page or an empty search results state, it can be frustrating and may lead to them abandoning the site.
+**Action:** Always provide a clear "escape hatch" in dead-end states, such as a prominent link back to the homepage or primary navigation area, to help users recover quickly.
