@@ -57,3 +57,8 @@
 **Vulnerability:** Unescaped Liquid output variables for URLs (e.g., `page.url`, `post.url`, `my_page.url`) were directly injected into HTML attributes (like `href`) in layout files (`_layouts/home.html`, `_layouts/post.html`, `_includes/header.html`). If a crafted `permalink` were defined in the front matter, it could lead to attribute breakout and Stored XSS.
 **Learning:** Liquid template engines, unlike some others, do not auto-escape their output by default. Any variable injected into an HTML attribute, including path or URL variables generated from potentially user-controllable input (like front matter), needs to be explicitly escaped.
 **Prevention:** Always append the `| escape` filter for any Liquid variable injected into HTML attributes unless it is strictly hardcoded and trusted.
+
+## 2026-05-28 - [Regex-based Link Protection Gaps Bypass via Whitespace and Case Variations]
+**Vulnerability:** The `external_links.rb` plugin relied on `href` prefixes matching exactly without trailing spaces, and used a case-sensitive target="_blank" Nokogiri selector (`[target="_blank"]`). This allowed evasion by prefixing URLs with whitespace (e.g. `href=" https://evil.com"`) or by using alternative casing like `target="_BLANK"`.
+**Learning:** Regex and CSS matchers without normalization are susceptible to bypasses because browsers are more lenient with whitespaces and casing. For attributes, Nokogiri requires XPath queries with `translate` to match case-insensitively. URLs must be stripped before validation.
+**Prevention:** Always strip leading/trailing whitespace before regex matching for URLs or similar attributes, and use XPath `translate` for case-insensitive matching of attribute values in Nokogiri.
