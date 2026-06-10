@@ -10,20 +10,20 @@ below are stand-ins — drop in your own cutouts (PNGs with transparent
 backgrounds) and adjust positions in `assets/main.scss` to taste.
 
 <div class="cutout-collage" markdown="0">
-  <a class="cutout cutout--polaroid" href="{{ '/about/' | relative_url }}" title="About">
-    <img src="{{ '/assets/images/cutouts/polaroid.png' | relative_url }}" alt="About" width="240" height="280" />
+  <a class="cutout cutout--polaroid" href="{{ '/about/' | relative_url | escape }}" title="About">
+    <img src="{{ '/assets/images/cutouts/polaroid.png' | relative_url | escape }}" alt="About" width="240" height="280" />
   </a>
   <a class="cutout cutout--sticker" href="{% post_url 2025-07-15-who-is-driving %}" title="Read the blog">
-    <img src="{{ '/assets/images/cutouts/sticker.png' | relative_url }}" alt="Read the blog" width="220" height="220" />
+    <img src="{{ '/assets/images/cutouts/sticker.png' | relative_url | escape }}" alt="Read the blog" width="220" height="220" />
   </a>
-  <a class="cutout cutout--badge" href="{{ '/' | relative_url }}" title="Home">
-    <img src="{{ '/assets/images/cutouts/badge.png' | relative_url }}" alt="Home" width="180" height="180" />
+  <a class="cutout cutout--badge" href="{{ '/' | relative_url | escape }}" title="Home">
+    <img src="{{ '/assets/images/cutouts/badge.png' | relative_url | escape }}" alt="Home" width="180" height="180" />
   </a>
   <a class="cutout cutout--speech" href="mailto:{{ site.email | escape }}" title="Email me">
-    <img src="{{ '/assets/images/cutouts/speech.png' | relative_url }}" alt="Email me" width="240" height="180" />
+    <img src="{{ '/assets/images/cutouts/speech.png' | relative_url | escape }}" alt="Email me" width="240" height="180" />
   </a>
   <a class="cutout cutout--button" href="https://github.com/{{ site.github_username | cgi_escape | escape }}" title="GitHub">
-    <img src="{{ '/assets/images/cutouts/button88.png' | relative_url }}" alt="GitHub" width="176" height="62" />
+    <img src="{{ '/assets/images/cutouts/button88.png' | relative_url | escape }}" alt="GitHub" width="176" height="62" />
   </a>
 </div>
 
