@@ -6,12 +6,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   {%- include csp.html -%}
-  <script src="{{ '/assets/js/security.js' | relative_url }}"></script>
+  <script src="{{ '/assets/js/security.js' | relative_url | escape }}"></script>
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>{% if page.title %}{{ page.title | escape }} | {% endif %}{{ site.title | escape }}</title>
   <!-- Performance optimization: Preload critical CSS -->
-  <link rel="preload" href="{{ '/assets/main.css' | relative_url }}" as="style">
-  <link rel="stylesheet" href="{{ '/assets/main.css' | relative_url }}" />
+  <link rel="preload" href="{{ '/assets/main.css' | relative_url | escape }}" as="style">
+  <link rel="stylesheet" href="{{ '/assets/main.css' | relative_url | escape }}" />
   <!-- Performance optimization: DNS prefetch for social links -->
   {%- if site.github_username -%}
     <link rel="dns-prefetch" href="https://github.com">
