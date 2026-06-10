@@ -31,6 +31,10 @@
 **Learning:** Reading `innerText` forces a synchronous layout calculation (reflow) because it is layout-aware (e.g., it ignores elements with `display: none` and respects CSS styling). When copying text from large code blocks on complex pages, this causes significant main thread blocking and layout thrashing.
 **Action:** Use `textContent` instead of `innerText` when extracting text from syntax-highlighted code blocks or when layout-aware text extraction isn't strictly necessary. `textContent` directly reads DOM text nodes without invoking the styling/layout engine, which is orders of magnitude faster.
 
+## 2026-05-25 - Ruby String Prefix Checks Memory Allocation Thrashing
+**Learning:** Using `lstrip` or similar string manipulation methods on very large strings (such as full HTML documents in Jekyll hooks) creates massive duplicate strings in memory, causing severe garbage collection overhead.
+**Action:** When performing string prefix checks on large strings, use the highly optimized `String#match?` method with a regex like `/\A\s*(?:<!DOCTYPE|<html)/i` to evaluate the string in-place with minimal memory allocation overhead.
+
 ## 2025-05-24 - String Optimization Memory Allocations
 **Learning:** String mutation methods like `lstrip` create entirely new strings in memory. For massive HTML documents (e.g. `doc.output` in Jekyll hooks), this causes massive garbage collection overhead when executing repeatedly.
 **Action:** Replace operations like `raw_html.lstrip.start_with?("...")` with `raw_html.match?(/\A\s*(?:...)/i)`. The `match?` function evaluates string contents in-place and bypasses object instantiation.
