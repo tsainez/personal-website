@@ -38,3 +38,8 @@
 ## 2025-05-24 - String Optimization Memory Allocations
 **Learning:** String mutation methods like `lstrip` create entirely new strings in memory. For massive HTML documents (e.g. `doc.output` in Jekyll hooks), this causes massive garbage collection overhead when executing repeatedly.
 **Action:** Replace operations like `raw_html.lstrip.start_with?("...")` with `raw_html.match?(/\A\s*(?:...)/i)`. The `match?` function evaluates string contents in-place and bypasses object instantiation.
+
+
+## 2026-05-26 - Ruby String Prefix Checks Memory Allocation Thrashing part 2
+**Learning:** Checking for string prefixes by stripping and then matching a regex (e.g., `href.strip =~ %r{\A(https?:|//)}`) allocates a new string in memory for every item evaluated. This creates unnecessary garbage collection overhead when running iteratively on links.
+**Action:** Use `String#match?` with a regex that handles whitespace (e.g., `href.match?(/\A\s*(?:https?:|\/\/)/i)`) to evaluate the existing string in-place with a highly optimized C implementation, bypassing new object instantiation entirely.
