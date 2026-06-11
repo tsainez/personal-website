@@ -9,3 +9,5 @@ __pycache__/
 node_modules/
 test-results/
 jekyll_serve.log
+pnpm-lock.yaml
+jekyll_output.log
