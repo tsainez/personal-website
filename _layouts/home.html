@@ -37,6 +37,10 @@ layout: default
     </ul>
 
     <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | relative_url | escape }}">via RSS</a></p>
+  {%- else -%}
+    <div class="empty-state">
+      <p>No posts have been published yet. Check back later!</p>
+    </div>
   {%- endif -%}
 
 </div>
