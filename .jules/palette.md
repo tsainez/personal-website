@@ -47,3 +47,7 @@
 ## 2026-11-04 - Clear Escape Hatches
 **Learning:** When users hit a dead-end like a 404 page or an empty search results state, it can be frustrating and may lead to them abandoning the site.
 **Action:** Always provide a clear "escape hatch" in dead-end states, such as a prominent link back to the homepage or primary navigation area, to help users recover quickly.
+
+## 2026-11-04 - Empty State Messages
+**Learning:** Content listing pages (like a blog homepage) without explicit empty states can leave users confused or assuming the site is broken if there's no content to display.
+**Action:** Always provide an explicit empty state message (e.g., "No posts have been published yet") for list or collection pages to reassure users and guide them properly.
