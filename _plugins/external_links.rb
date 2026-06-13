@@ -25,7 +25,9 @@ Jekyll::Hooks.register [:documents, :pages], :post_render do |doc|
     next unless href
 
     # Check for external links (http, https, or protocol-relative //)
-    if href.strip =~ %r{\A(https?:|//)}
+    # Bolt Optimization: Avoid allocating a new string with `strip` inside the loop
+    # by using an in-place Regex prefix check with `match?`.
+    if href.match?(/\A\s*(?:https?:|\/\/)/i)
       rel = link['rel'] || ''
       parts = rel.split(/\s+/)
 
