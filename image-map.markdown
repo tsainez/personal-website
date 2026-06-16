@@ -13,7 +13,7 @@ backgrounds) and adjust positions in `assets/main.scss` to taste.
   <a class="cutout cutout--polaroid" href="{{ '/about/' | relative_url | escape }}" title="About">
     <img src="{{ '/assets/images/cutouts/polaroid.png' | relative_url | escape }}" alt="About" width="240" height="280" />
   </a>
-  <a class="cutout cutout--sticker" href="{% post_url 2025-07-15-who-is-driving %}" title="Read the blog">
+  <a class="cutout cutout--sticker" href="{{ "/" | relative_url | escape }}" title="Read the blog">
     <img src="{{ '/assets/images/cutouts/sticker.png' | relative_url | escape }}" alt="Read the blog" width="220" height="220" />
   </a>
   <a class="cutout cutout--badge" href="{{ '/' | relative_url | escape }}" title="Home">
