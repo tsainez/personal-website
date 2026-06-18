@@ -38,3 +38,7 @@
 ## 2025-05-24 - String Optimization Memory Allocations
 **Learning:** String mutation methods like `lstrip` create entirely new strings in memory. For massive HTML documents (e.g. `doc.output` in Jekyll hooks), this causes massive garbage collection overhead when executing repeatedly.
 **Action:** Replace operations like `raw_html.lstrip.start_with?("...")` with `raw_html.match?(/\A\s*(?:...)/i)`. The `match?` function evaluates string contents in-place and bypasses object instantiation.
+
+## 2026-05-26 - Nokogiri HTML Serialization Avoidance and Array Allocations
+**Learning:** In Jekyll `post_render` hooks using Nokogiri, serializing the DOM back to HTML with `page.to_html` is an extremely expensive operation. Doing it unconditionally, even when no nodes were altered, severely degrades build performance. Furthermore, parsing string attributes like `rel` by splitting into an array, appending, and joining (`rel.split(/\s+/)...join`) allocates multiple short-lived objects per iteration, leading to GC pressure.
+**Action:** Always wrap `page.to_html` (and `doc.output = ...`) in a conditional block (e.g., using a `modified` boolean flag) to only execute if the DOM was actually altered. When appending values to attribute strings inside tight loops, use simple concatenation and Regex checks (`match?`) instead of array manipulations to drastically cut down on object allocations.

@@ -20,6 +20,8 @@ Jekyll::Hooks.register [:documents, :pages], :post_render do |doc|
     page = Nokogiri::HTML::DocumentFragment.parse(raw_html)
   end
 
+  modified = false
+
   page.xpath('descendant-or-self::a[translate(@target, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")="_blank"]').each do |link|
     href = link['href']
     next unless href
@@ -29,14 +31,19 @@ Jekyll::Hooks.register [:documents, :pages], :post_render do |doc|
     # instead of `strip =~` to avoid creating new string objects in memory.
     if href.match?(/\A\s*(?:https?:|\/\/)/i)
       rel = link['rel'] || ''
-      parts = rel.split(/\s+/)
+      original_rel = rel.dup
 
-      parts << 'noopener' unless parts.include?('noopener')
-      parts << 'noreferrer' unless parts.include?('noreferrer')
+      # ⚡ Bolt Optimization: Avoid string allocations from split and join
+      rel = rel.empty? ? 'noopener' : "#{rel} noopener" unless rel.match?(/(?:\A|\s)noopener(?:\s|\z)/i)
+      rel = rel.empty? ? 'noreferrer' : "#{rel} noreferrer" unless rel.match?(/(?:\A|\s)noreferrer(?:\s|\z)/i)
 
-      link['rel'] = parts.join(' ')
+      if rel != original_rel
+        link['rel'] = rel
+        modified = true
+      end
     end
   end
 
-  doc.output = page.to_html
+  # ⚡ Bolt Optimization: Only serialize DOM back to HTML if we actually modified it
+  doc.output = page.to_html if modified
 end
