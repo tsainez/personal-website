@@ -49,22 +49,33 @@ $focus-color: #82aaff;
 /* Skip to content link - visually hidden but accessible */
 .skip-link {
   position: absolute;
-  top: -9999px;
-  left: -9999px;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+
   background: #000;
   color: #fff;
-  padding: 8px 16px;
   z-index: 100;
   text-decoration: none;
   font-weight: bold;
 
-  &:focus {
-    top: 0;
-    left: 0;
+  &:focus,
+  &:focus-visible {
+    position: static;
     width: auto;
     height: auto;
-    /* Using CSS clip pattern to hide it visually but keep it accessible */
+    padding: 8px 16px;
+    margin: 0;
+    overflow: visible;
     clip: auto;
+    white-space: normal;
+    outline: 2px solid $focus-color;
+    outline-offset: 2px;
   }
 }
 
