@@ -20,6 +20,12 @@ Jekyll::Hooks.register [:documents, :pages], :post_render do |doc|
     page = Nokogiri::HTML::DocumentFragment.parse(raw_html)
   end
 
+  # ⚡ Bolt Optimization: Track if we actually modify the DOM.
+  # Nokogiri's `to_html` is extremely expensive. If we parse the document
+  # but find all target links already have noopener/noreferrer, we should
+  # avoid serializing the DOM back to HTML.
+  modified = false
+
   page.xpath('descendant-or-self::a[translate(@target, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")="_blank"]').each do |link|
     href = link['href']
     next unless href
@@ -29,14 +35,23 @@ Jekyll::Hooks.register [:documents, :pages], :post_render do |doc|
     # instead of `strip =~` to avoid creating new string objects in memory.
     if href.match?(/\A\s*(?:https?:|\/\/)/i)
       rel = link['rel'] || ''
-      parts = rel.split(/\s+/)
 
-      parts << 'noopener' unless parts.include?('noopener')
-      parts << 'noreferrer' unless parts.include?('noreferrer')
+      # ⚡ Bolt Optimization: Avoid allocating arrays with `split` and `join`
+      # by using simple string checks and interpolation.
+      needs_noopener = !rel.match?(/\bnoopener\b/)
+      needs_noreferrer = !rel.match?(/\bnoreferrer\b/)
 
-      link['rel'] = parts.join(' ')
+      if needs_noopener || needs_noreferrer
+        new_rel = rel.dup
+        new_rel << (new_rel.empty? ? 'noopener' : ' noopener') if needs_noopener
+        new_rel << (new_rel.empty? ? 'noreferrer' : ' noreferrer') if needs_noreferrer
+
+        link['rel'] = new_rel
+        modified = true
+      end
     end
   end
 
-  doc.output = page.to_html
+  # ⚡ Bolt Optimization: Only serialize if changes were made
+  doc.output = page.to_html if modified
 end
