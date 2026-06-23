@@ -38,3 +38,11 @@
 ## 2025-05-24 - String Optimization Memory Allocations
 **Learning:** String mutation methods like `lstrip` create entirely new strings in memory. For massive HTML documents (e.g. `doc.output` in Jekyll hooks), this causes massive garbage collection overhead when executing repeatedly.
 **Action:** Replace operations like `raw_html.lstrip.start_with?("...")` with `raw_html.match?(/\A\s*(?:...)/i)`. The `match?` function evaluates string contents in-place and bypasses object instantiation.
+
+## 2026-05-26 - Unconditional Nokogiri Serialization
+**Learning:** In Jekyll post_render hooks that use Nokogiri to manipulate the DOM, unconditionally calling `page.to_html` to serialize the DOM back into a string is extremely expensive. If the DOM was parsed but not actually modified, this serialization wastes massive amounts of CPU time, severely degrading build performance for large sites.
+**Action:** Always wrap DOM serialization (like `doc.output = page.to_html`) in a conditional block (using a `modified` boolean flag) so it only executes when the DOM has actually been changed.
+
+## 2026-05-26 - Ruby Array Allocation in Loops
+**Learning:** Using array manipulation methods like `split` and `join` inside iterative loops to modify HTML attributes (e.g., adding classes or rels) causes significant memory allocation and garbage collection overhead, especially when parsing many elements.
+**Action:** Replace array-based manipulations in loops with simple regex checks (`match?`) and string concatenation (`dup` and `<<`) to evaluate and update strings with minimal object instantiation.
