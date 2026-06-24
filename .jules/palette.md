@@ -51,3 +51,7 @@
 ## 2026-06-17 - Empty State Escape Hatches
 **Learning:** When adding an empty state escape hatch to the homepage, linking back to the homepage (`/`) is redundant and circular.
 **Action:** Provide a relevant alternative link, such as the About page (`/about/`), to prevent circular navigation.
+
+## 2026-11-05 - Hiding Skip Links Accessibly
+**Learning:** Hiding skip-to-content links using `top: -9999px` causes scrolling issues on right-to-left (RTL) pages or when using screen readers, and can sometimes result in layout glitches. The element should be visually hidden but still exist naturally in the accessibility tree without being shifted thousands of pixels away.
+**Action:** Always use the visually hidden `clip` pattern (`clip: rect(0, 0, 0, 0)`, `width: 1px`, `height: 1px`, `overflow: hidden`, `white-space: nowrap`) to hide interactive elements like skip links. Use `:focus-visible` to restore the visual properties (`width: auto`, `clip: auto`, etc.) when the element receives keyboard focus.
