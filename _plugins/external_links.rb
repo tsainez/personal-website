@@ -20,6 +20,8 @@ Jekyll::Hooks.register [:documents, :pages], :post_render do |doc|
     page = Nokogiri::HTML::DocumentFragment.parse(raw_html)
   end
 
+  modified = false
+
   page.xpath('descendant-or-self::a[translate(@target, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")="_blank"]').each do |link|
     href = link['href']
     next unless href
@@ -31,12 +33,18 @@ Jekyll::Hooks.register [:documents, :pages], :post_render do |doc|
       rel = link['rel'] || ''
       parts = rel.split(/\s+/)
 
-      parts << 'noopener' unless parts.include?('noopener')
-      parts << 'noreferrer' unless parts.include?('noreferrer')
+      unless parts.include?('noopener') && parts.include?('noreferrer')
+        parts << 'noopener' unless parts.include?('noopener')
+        parts << 'noreferrer' unless parts.include?('noreferrer')
 
-      link['rel'] = parts.join(' ')
+        link['rel'] = parts.join(' ')
+        modified = true
+      end
     end
   end
 
-  doc.output = page.to_html
+  # ⚡ Bolt Optimization: Only serialize the DOM back to HTML if we actually modified it.
+  # Unconditionally calling `page.to_html` is an extremely expensive operation and forces
+  # massive string allocations, which wastes time when nothing was changed.
+  doc.output = page.to_html if modified
 end
