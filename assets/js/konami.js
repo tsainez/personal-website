@@ -31,9 +31,12 @@
     const viewportHeight = window.innerHeight;
 
     // 2. Identify elements to animate
-    // Optimization: Exclude spans that are direct children of code elements (syntax highlighting tokens)
-    // to significantly reduce the candidate set on code-heavy pages.
-    const elements = document.querySelectorAll('p, h1, h2, h3, li, :not(code) > span, .site-title, .page-link');
+    // ⚡ Bolt Optimization: Removed `:not(code) > span` from the query selector.
+    // The `:not()` pseudo-class combined with a descendant selector is extremely expensive to evaluate
+    // across the entire document. Since spans are typically inline elements inside `p` or `li` tags,
+    // they will float with their parent blocks anyway. This change reduces main thread blocking
+    // and significantly decreases the total number of DOM elements being animated.
+    const elements = document.querySelectorAll('p, h1, h2, h3, li, .site-title, .page-link');
     const visibleElements = [];
 
     elements.forEach(el => {
