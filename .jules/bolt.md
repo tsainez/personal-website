@@ -42,3 +42,7 @@
 ## 2026-05-26 - Unnecessary Nokogiri Serialization and String Object Allocation
 **Learning:** In Jekyll `post_render` hooks utilizing Nokogiri, unconditionally serializing the DOM back to HTML (`page.to_html`) is an extremely expensive operation. Furthermore, performing operations like `split` and `join` on strings inside loops creates excessive memory allocations.
 **Action:** Always wrap `page.to_html` in a conditional block (e.g., using a `modified` boolean flag) so it only runs if the DOM was actually changed. Favor simple string interpolation and concatenation over array manipulations like `split(/\s+/)` to modify attributes.
+
+## 2026-05-27 - querySelectorAll Performance with Complex Selectors
+**Learning:** Complex CSS pseudo-classes combined with descendant selectors (e.g., `:not(code) > span`) in JavaScript `querySelectorAll` calls are extremely computationally expensive because they force the browser to evaluate the condition against nearly every element in the document tree.
+**Action:** Simplify these selectors (e.g. by removing them when floating animations can naturally apply to parent block elements) to significantly reduce main thread blocking and DOM parsing overhead.
