@@ -1,5 +1,25 @@
 # Palette's Journal
 
+## 2025-05-18 - Skip to Content Links in Jekyll Themes
+**Learning:** Default Jekyll themes like `minima` often lack "skip to main content" links, which are a critical accessibility feature.
+**Action:** When customizing Jekyll sites, always verify if a skip link exists. If not, override the `default.html` layout (and any other root layouts) to include one, and ensure the target element (usually `<main>`) has the corresponding ID. The CSS 'clip' pattern is a reliable way to hide it visually until focused.
+
+## 2025-05-18 - Copy Code Feedback for Screen Readers
+**Learning:** Simply changing `innerText` from "Copy" to "Copied!" is not enough for screen readers if an `aria-label` is present, as `aria-label` overrides inner text.
+**Action:** When providing status feedback on a button that has an `aria-label`, you must also update the `aria-label` (e.g., "Copied successfully") to ensure the new state is announced.
+
+## 2025-05-20 - Programmatic Focus on Non-Interactive Elements
+**Learning:** Calling `.focus()` on `document.body` (or other non-interactive containers) silently fails in many contexts unless the element explicitly has `tabindex="-1"`. This leaves screen reader users stranded at the bottom of the page after actions like "Back to Top".
+**Action:** When managing focus programmatically to a container (like resetting view to top), dynamically add `tabindex="-1"` before focusing, and optionally remove it on blur to keep the DOM clean.
+
+## 2025-05-21 - Accessible Post Navigation
+**Learning:** When using decorative characters like `«` or `»` in links, screen readers may announce them awkwardly. It's better to wrap them in `aria-hidden="true"` and provide a robust `aria-label` for the link itself.
+**Action:** For all "Previous/Next" navigation links, use `aria-label="Previous post: [Title]"` and hide decorative arrows from assistive technology.
+
+## 2025-05-23 - Context-Aware Anchor Links
+**Learning:** Repeated interactive elements like "Copy link" buttons need unique accessible names to be useful. A generic "Copy link to section" label forces screen reader users to guess the context.
+**Action:** Append the associated section title to the `aria-label` (e.g., "Copy link to section: Introduction") and ensure this specific label is restored after any temporary state changes (like "Copied!").
+
 ## 2025-07-15 - Read Time Estimates
 **Learning:** Adding a simple "X min read" estimate provides valuable context for users before they commit to clicking a link. It respects the user's time and is a standard pattern in modern blogs. Liquid's `number_of_words` filter makes this easy to implement without external plugins.
 **Action:** When working with Jekyll themes, overriding layouts (like `home` and `post`) is a safe way to inject small features without modifying the theme gem directly.
@@ -23,31 +43,35 @@
 ## 2026-05-23 - Checkbox Hack Accessibility
 **Learning:** When using the "checkbox hack" pattern for toggles (like mobile navigation menus), placing `aria-label` on the visual `<label>` element is insufficient because the `<label>` is not the actual focusable control. Screen readers will not announce the label when the user focuses the visually hidden `<input type="checkbox">`.
 **Action:** Always place the accessible name (`aria-label`) directly on the visually hidden `<input type="checkbox">` element. Additionally, add a `title` attribute to the visual `<label>` to provide a native tooltip for sighted users on hover, and ensure any internal decorative icons (like SVGs) have `aria-hidden="true"`.
-## 2026-10-27 - Icon Accessibility and Tooltips
-**Learning:** For icon-only interactive elements (like custom checkboxes or back-to-top buttons), `aria-label` is crucial for screen readers, but it doesn't help sighted users who may not understand the icon's meaning. Additionally, when using the "checkbox hack" for things like mobile menus, placing the `aria-label` on the visual `<label>` is incorrect; screen readers expect the accessible name on the hidden `<input type="checkbox">` itself. Finally, decorative SVGs used within links that already have accessible text (like social links) should have `aria-hidden="true"` to prevent redundant "graphic" announcements.
-**Action:** 1. Always place `aria-label` on the interactive element (e.g., `<input>`), not its visual label or wrapper. 2. Add `title` attributes to icon-only buttons or ambiguous icons to provide native tooltips for sighted users. 3. Add `aria-hidden="true"` to decorative SVGs within links or buttons to reduce screen reader noise.
-## 2026-10-31 - Checkbox Hack Accessibility
-**Learning:** For accessible 'checkbox hack' implementations (e.g., mobile navigation via hidden checkbox), the `aria-label` must be placed directly on the `<input type="checkbox">` element, not its visual `<label>`, to ensure proper screen reader announcements. Adding `title` attributes to icon-only buttons provides native tooltips for sighted users.
-**Action:** Always check ARIA label placement for hidden inputs acting as toggles, and use `title` attributes for icon-only interactions.
-## 2026-06-03 - Escape Hatches for 404 Pages
-**Learning:** 404 pages and empty states can become frustrating dead-ends for users. By providing an escape hatch, such as a link back to the homepage, we allow the user to continue navigating rather than leaving the site or feeling stuck. This simple addition makes the user experience significantly better.
-**Action:** Always include a clear call-to-action or escape hatch (like a link to the homepage or search bar) on error pages and empty states to prevent user dead-ends.
-
-## 2026-11-01 - 404 Page Escape Hatches
-**Learning:** A 404 page without clear next steps creates a dead end for users, leading to frustration and abandonment. A simple link back to the homepage provides an essential "escape hatch," significantly improving the user experience during an error state.
-**Action:** Always ensure that error states (like 404 pages) and empty states include a clear, actionable path forward, such as a link to the homepage or main dashboard.
-## 2026-06-05 - 404 Page Escape Hatch
-**Learning:** Dead-end states like 404 pages disrupt user flow and cause frustration if they offer no way out. Providing an explicit escape hatch is critical to good UX.
-**Action:** Always provide a clear, visible link to the homepage or a relevant starting point on error pages or empty states to prevent user dead-ends.
 
 ## 2026-05-24 - Empty State Escape Hatches
 **Learning:** A 404 page acts as an empty state. Without a clear path forward, it acts as a "dead-end" that can frustrate users and increase bounce rates.
 **Action:** Always provide an explicit, helpful call-to-action (like returning to the homepage) in error pages and empty states to guide users back to the primary flow.
 
-## 2026-11-04 - Clear Escape Hatches
-**Learning:** When users hit a dead-end like a 404 page or an empty search results state, it can be frustrating and may lead to them abandoning the site.
-**Action:** Always provide a clear "escape hatch" in dead-end states, such as a prominent link back to the homepage or primary navigation area, to help users recover quickly.
+## 2026-06-03 - Escape Hatches for 404 Pages
+**Learning:** 404 pages and empty states can become frustrating dead-ends for users. By providing an escape hatch, such as a link back to the homepage, we allow the user to continue navigating rather than leaving the site or feeling stuck. This simple addition makes the user experience significantly better.
+**Action:** Always include a clear call-to-action or escape hatch (like a link to the homepage or search bar) on error pages and empty states to prevent user dead-ends.
+
+## 2026-06-05 - 404 Page Escape Hatch
+**Learning:** Dead-end states like 404 pages disrupt user flow and cause frustration if they offer no way out. Providing an explicit escape hatch is critical to good UX.
+**Action:** Always provide a clear, visible link to the homepage or a relevant starting point on error pages or empty states to prevent user dead-ends.
 
 ## 2026-06-17 - Empty State Escape Hatches
 **Learning:** When adding an empty state escape hatch to the homepage, linking back to the homepage (`/`) is redundant and circular.
 **Action:** Provide a relevant alternative link, such as the About page (`/about/`), to prevent circular navigation.
+
+## 2026-10-27 - Icon Accessibility and Tooltips
+**Learning:** For icon-only interactive elements (like custom checkboxes or back-to-top buttons), `aria-label` is crucial for screen readers, but it doesn't help sighted users who may not understand the icon's meaning. Additionally, when using the "checkbox hack" for things like mobile menus, placing the `aria-label` on the visual `<label>` is incorrect; screen readers expect the accessible name on the hidden `<input type="checkbox">` itself. Finally, decorative SVGs used within links that already have accessible text (like social links) should have `aria-hidden="true"` to prevent redundant "graphic" announcements.
+**Action:** 1. Always place `aria-label` on the interactive element (e.g., `<input>`), not its visual label or wrapper. 2. Add `title` attributes to icon-only buttons or ambiguous icons to provide native tooltips for sighted users. 3. Add `aria-hidden="true"` to decorative SVGs within links or buttons to reduce screen reader noise.
+
+## 2026-10-31 - Checkbox Hack Accessibility
+**Learning:** For accessible 'checkbox hack' implementations (e.g., mobile navigation via hidden checkbox), the `aria-label` must be placed directly on the `<input type="checkbox">` element, not its visual `<label>`, to ensure proper screen reader announcements. Adding `title` attributes to icon-only buttons provides native tooltips for sighted users.
+**Action:** Always check ARIA label placement for hidden inputs acting as toggles, and use `title` attributes for icon-only interactions.
+
+## 2026-11-01 - 404 Page Escape Hatches
+**Learning:** A 404 page without clear next steps creates a dead end for users, leading to frustration and abandonment. A simple link back to the homepage provides an essential "escape hatch," significantly improving the user experience during an error state.
+**Action:** Always ensure that error states (like 404 pages) and empty states include a clear, actionable path forward, such as a link to the homepage or main dashboard.
+
+## 2026-11-04 - Clear Escape Hatches
+**Learning:** When users hit a dead-end like a 404 page or an empty search results state, it can be frustrating and may lead to them abandoning the site.
+**Action:** Always provide a clear "escape hatch" in dead-end states, such as a prominent link back to the homepage or primary navigation area, to help users recover quickly.
