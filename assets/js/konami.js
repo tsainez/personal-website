@@ -42,7 +42,7 @@
     elements.forEach(el => {
         // Performance: Exclude elements inside code blocks (pre, code)
         // Accessing el.offsetParent checks layout. Since we haven't written yet, this is fast/cached.
-        if (el.offsetParent !== null && !el.classList.contains('star') && el.id !== 'rocket' && !el.closest('pre') && !el.closest('code')) {
+        if (el.offsetParent !== null && !el.classList.contains('star') && el.id !== 'rocket' && !el.closest('pre, code')) {
             visibleElements.push(el);
         }
     });

@@ -41,6 +41,7 @@ class Element {
         // Mock simple closest logic
         if (selector === 'pre' && this.className.includes('in-pre')) return true;
         if (selector === 'code' && this.className.includes('in-code')) return true;
+        if (selector === 'pre, code' && (this.className.includes('in-pre') || this.className.includes('in-code'))) return true;
         return null;
     }
 
