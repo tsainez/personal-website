@@ -77,3 +77,8 @@
 **Vulnerability:** The external links plugin relied on Nokogiri's `a[target="_blank"]` CSS selector, which is strictly case-sensitive. This meant links authored with `target="_BLANK"` bypassed the filter and were not assigned `rel="noopener noreferrer"`, leaving them vulnerable to reverse tabnabbing.
 **Learning:** HTML attribute values like `target` are often treated case-insensitively by browsers but are evaluated strictly by parser selectors unless specifically configured. In Nokogiri, CSS selectors are case-sensitive.
 **Prevention:** Replaced the CSS selector with an XPath query using the `translate()` function to enforce case-insensitive matching (`//a[translate(@target, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")="_blank"]`), ensuring consistent and robust protection regardless of authored case.
+
+## 2026-07-18 - Frame Busting Clickjacking Bypass
+**Vulnerability:** The client-side frame-busting logic in `security.js` attempted to hide the page by manipulating the DOM (`document.documentElement.innerHTML = ''`), which relies on scripts executing. If an attacker frames the site in an iframe using the `sandbox` attribute (e.g., `sandbox="allow-forms"` without `allow-scripts`), the script doesn't execute and the site renders normally, exposing it to clickjacking.
+**Learning:** Security controls that rely on JavaScript execution fail closed (insecurely) if scripts are disabled or blocked by sandboxing.
+**Prevention:** Implement the OWASP-recommended frame-busting mechanism: securely hide the body by default using an inline CSS style (`<style id="antiClickjack">body{display:none !important;}</style>`), allow this style through CSP using a SHA-256 hash, and only remove it via JavaScript if `window.self === window.top`.
