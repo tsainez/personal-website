@@ -47,3 +47,7 @@
 ## 2026-05-27 - querySelectorAll Performance with Complex Selectors
 **Learning:** Complex CSS pseudo-classes combined with descendant selectors (e.g., `:not(code) > span`) in JavaScript `querySelectorAll` calls are extremely computationally expensive because they force the browser to evaluate the condition against nearly every element in the document tree.
 **Action:** Simplify these selectors (e.g. by removing them when floating animations can naturally apply to parent block elements) to significantly reduce main thread blocking and DOM parsing overhead.
+
+## 2026-07-18 - Caching ImageFont loading in Python scripts
+**Learning:** Loading TrueType fonts using `ImageFont.truetype` inside a loop or function can be an expensive operation. Calling it repeatedly drastically increases script execution time.
+**Action:** Use Python's `@functools.lru_cache()` decorator on the font loading function to cache the font object. This makes subsequent font retrieval near instantaneous and drastically speeds up the execution time.

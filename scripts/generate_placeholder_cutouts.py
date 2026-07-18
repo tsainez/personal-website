@@ -3,6 +3,7 @@
 Run once: `python3 scripts/generate_placeholder_cutouts.py`
 Outputs go to assets/images/cutouts/.
 """
+import functools
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
@@ -10,6 +11,7 @@ OUT = Path(__file__).resolve().parent.parent / "assets" / "images" / "cutouts"
 OUT.mkdir(parents=True, exist_ok=True)
 
 
+@functools.lru_cache()
 def _font(size: int) -> ImageFont.ImageFont:
     for path in (
         "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
