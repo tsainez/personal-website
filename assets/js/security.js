@@ -10,15 +10,14 @@
  * 3. Then attempts to bust out (redirect top window).
  */
 (function() {
-  if (window.self !== window.top) {
-      // In a frame!
+  // Unconditionally hide the document elements before the body is even parsed.
+  document.documentElement.style.display = 'none';
 
-      // 1. Hide everything immediately by clearing the document.
-      // This prevents the user from seeing or interacting with the framed site.
-      // We assume that if we are framed, we don't want to show anything unless we can successfully bust out.
-      document.documentElement.innerHTML = '';
-
-      // 2. Attempt to bust out
+  if (window.self === window.top) {
+      // Not in a frame, safely show the document.
+      document.documentElement.style.display = '';
+  } else {
+      // In a frame! Attempt to bust out.
       try {
           // Attempt redirect directly.
           // Writing to window.top.location is allowed even cross-origin (navigation),
@@ -28,8 +27,8 @@
           window.top.location = window.self.location;
       } catch (e) {
           // If sandbox blocks navigation, we catch the error.
-          // The content remains hidden (removed), so the user is protected.
-          console.warn('Sentinel: Failed to break frame. Site is likely running in a sandboxed iframe. Content removed for protection.');
+          // The content remains hidden, so the user is protected from clickjacking.
+          console.warn('Sentinel: Failed to break frame. Site is likely running in a sandboxed iframe. Content remains hidden for protection.');
       }
   }
 })();
