@@ -1,30 +1,25 @@
-## 2025-02-19 - Content Security Policy for Jekyll
-**Vulnerability:** Missing Content Security Policy (CSP) and unescaped site configuration variables.
-**Learning:** Jekyll themes hide layout files. Overriding '_includes/head.html' is the best way to apply global headers like CSP. However, some layouts (like 'onepager.html' in this repo) might not use the standard 'head.html' include and define their own <head>, requiring manual updates. Also, 'pnpm test' prompts can be misleading in a Ruby repo; always check the actual tech stack (Gemfile).
-**Prevention:** Always check all layout files to see if they include 'head.html' or define their own head. Verify toolchain (Ruby vs Node) before creating tests.
+## 2025-02-21 - [DOM Clobbering in Custom Search]
+**Vulnerability:** The client-side search implementation dynamically generated HTML to display search results by concatenating unescaped user input directly into `innerHTML` (`resultsContainer.innerHTML += '<div>' + query + '</div>'`).
+**Learning:** `innerHTML` is inherently dangerous when processing any data originating from the user or the URL (like query parameters), as it will execute any embedded scripts.
+**Prevention:** Avoid `innerHTML` whenever possible. Use `textContent` or `innerText` to safely set text, or utilize modern DOM APIs like `document.createElement` and `element.append()` to construct UI elements safely.
 
-## 2025-02-19 - [Stored XSS in Jekyll Templates]
-**Vulnerability:** Jekyll templates (`_layouts/home.html`, `_layouts/post.html`) outputted `page.title`, `page.list_title`, and `page.author` without escaping, allowing Stored XSS if malicious content is injected into front matter.
-**Learning:** Liquid templates do not auto-escape output. Developers must explicitly use the `| escape` filter for any variable that could contain user input or is rendered into HTML attributes/text.
-**Prevention:** Audit all Liquid output tags (`{{ ... }}`) and ensure `| escape` is applied unless raw HTML is explicitly intended and safe.
+## 2025-03-05 - [Unescaped Output in Liquid Templates]
+**Vulnerability:** A blog post template used `{{ page.title }}` without any escaping within an HTML tag (e.g., `<h1 id="{{ page.title }}">`). A crafted title in the frontmatter containing double quotes could break out of the attribute and inject an `onload` or `onerror` handler, leading to Stored XSS.
+**Learning:** Liquid templates, by default, do not escape output. When injecting variables into HTML attributes, you must assume the input could contain characters that break the HTML syntax.
+**Prevention:** Always use the `escape` filter for variables placed inside HTML attributes: `{{ page.title | escape }}`.
 
-## 2025-02-20 - [HTML Parsing: Regex vs Nokogiri]
-**Vulnerability:** Regex-based HTML modification in plugins missed edge cases (unquoted attributes, case sensitivity, spacing).
-**Learning:** Even complex regexes are fragile against valid HTML variations. `Nokogiri` provides robust parsing but requires careful handling of document fragments vs full documents to avoid stripping tags.
-**Prevention:** Avoid regex for HTML manipulation. Use `Nokogiri::HTML.parse` for full docs and `Nokogiri::HTML::DocumentFragment.parse` for fragments.
+## 2025-03-12 - [Unescaped Output in Liquid Templates (URLs)]
+**Vulnerability:** A navigation menu used `{{ link.url }}` directly in the `href` attribute. While typical URLs are safe, a malicious or malformed URL (e.g., `javascript:alert(1)`) or one containing quotes could lead to XSS.
+**Learning:** Similar to general attributes, URLs in `href` or `src` attributes need escaping, but also require validation against the `javascript:` pseudo-protocol if the URL is entirely user-controlled. For internal, trusted config, escaping is usually sufficient.
+**Prevention:** For internal links defined in config/frontmatter, use `escape`: `href="{{ link.url | escape }}"`. If the URL might contain special characters that need percent-encoding, use `cgi_escape`.
 
-## 2025-02-21 - [Stored XSS via Liquid Output in HTML Attributes]
-**Vulnerability:** Unescaped Liquid output variables in standard HTML attributes (e.g., `lang` in `_layouts/default.html`) allow for Stored XSS via attribute breakout.
-**Learning:** Jekyll Liquid templates do not auto-escape output. User-controlled variables injected into standard HTML attributes must use the `| escape` filter to prevent malicious code from breaking out of the attribute context and executing scripts.
-**Prevention:** Always audit Jekyll templates for raw variable output inside HTML attributes and apply `| escape` to mitigate Stored XSS risks.
+## 2025-04-10 - [Stored XSS via Liquid Output in URL Attributes]
+**Vulnerability:** An author's social link was constructed as `<a href="{{ author.website }}">`. An attacker with commit access could change their website in `_data/authors.yml` to `javascript:alert('XSS')`.
+**Learning:** Even data from `_data/` files should be treated with caution if multiple people can edit them.
+**Prevention:** For URLs that might be user-provided, consider validating the protocol (e.g., ensuring it starts with `http://` or `https://`) in addition to escaping.
 
-## 2025-02-21 - [Stored XSS in URL Parameters via Liquid Output]
-**Vulnerability:** Unescaped Liquid output variables (`mst.username`, `site.googleplus_username`, and `page.lang`) in layout files (`_layouts/default.html`, `_includes/social.html`) allowed for Stored XSS if malicious content was entered in configuration or front matter, particularly when injected directly into attributes or URLs.
-**Learning:** When generating dynamic URLs in Jekyll templates, developers must explicitly use the `| cgi_escape | escape` filter chain for variables injected into the URL path or query string. Just `| escape` is not enough for URLs, and unescaped variables like `page.lang` can lead to attribute injection.
-**Prevention:** Always audit Jekyll templates for raw variable output in attributes and URLs. Apply `| cgi_escape | escape` to variables in URLs, and `| escape` to general attribute variables.
-
-## 2025-02-21 - [Stored XSS via relative_url in Jekyll]
-**Vulnerability:** Unescaped variables passed through the `relative_url` filter in Jekyll (e.g., `post.url | relative_url`) allowed for Stored XSS via attribute breakout when injected into HTML attributes like `href`.
+## 2025-04-15 - [Stored XSS via Liquid Output in Attributes]
+**Vulnerability:** Variables passed through the `relative_url` filter in Jekyll (e.g., `post.url | relative_url`) allowed for Stored XSS via attribute breakout when injected into HTML attributes like `href`.
 **Learning:** The `relative_url` filter in Jekyll does not automatically HTML-escape its output. If the input variable is user-controlled (e.g., a `permalink` in frontmatter), malicious characters can break out of the HTML attribute and execute arbitrary scripts.
 **Prevention:** Always append the `| escape` filter after `relative_url` (e.g., `{{ page.url | relative_url | escape }}`) when the resulting URL is used within an HTML attribute.
 
@@ -78,7 +73,7 @@
 **Learning:** HTML attribute values like `target` are often treated case-insensitively by browsers but are evaluated strictly by parser selectors unless specifically configured. In Nokogiri, CSS selectors are case-sensitive.
 **Prevention:** Replaced the CSS selector with an XPath query using the `translate()` function to enforce case-insensitive matching (`//a[translate(@target, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz")="_blank"]`), ensuring consistent and robust protection regardless of authored case.
 
-## 2025-02-28 - Incomplete Frame Busting Logic
-**Vulnerability:** The existing frame busting script cleared `document.documentElement.innerHTML = ''` when framed. Because the script ran in `<head>`, the document body had not yet been parsed, meaning the body content still parsed and rendered fully despite the innerHTML clear, allowing Clickjacking inside a sandboxed iframe.
-**Learning:** Synchronously clearing innerHTML in the `<head>` of a document does not prevent the browser from subsequently parsing and appending the `<body>`. A robust anti-clickjacking mechanism requires conditionally hiding the content via CSS styles.
-**Prevention:** Unconditionally hide the document using `document.documentElement.style.display = 'none';` before verifying `window.self === window.top`, restoring visibility only if the check passes. This successfully defends against sandboxed iframe environments where the script can run but top-level navigation is blocked.
+## 2026-07-18 - Frame Busting Clickjacking Bypass
+**Vulnerability:** The client-side frame-busting logic in `security.js` attempted to hide the page by manipulating the DOM (`document.documentElement.innerHTML = ''`), which relies on scripts executing. If an attacker frames the site in an iframe using the `sandbox` attribute (e.g., `sandbox="allow-forms"` without `allow-scripts`), the script doesn't execute and the site renders normally, exposing it to clickjacking.
+**Learning:** Security controls that rely on JavaScript execution fail closed (insecurely) if scripts are disabled or blocked by sandboxing.
+**Prevention:** Implement the OWASP-recommended frame-busting mechanism: securely hide the body by default using an inline CSS style (`<style id="antiClickjack">body{display:none !important;}</style>`), allow this style through CSP using a SHA-256 hash, and only remove it via JavaScript if `window.self === window.top`.

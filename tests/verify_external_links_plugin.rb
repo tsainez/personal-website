@@ -53,3 +53,10 @@ test("Internal Link", '<a href="/internal" target="_blank">Link</a>', false)
 test("Existing Rel", '<a href="https://google.com" target="_blank" rel="nofollow">Link</a>', true)
 test("Case Insensitive Target", '<a href="https://example.com" target="_BLANK">Link</a>', true)
 test("Mixed Case Target", '<a href="https://example.com" target="_Blank">Link</a>', true)
+
+puts "--- Verifying Error Paths and Edge Cases ---"
+test("Malformed HTML (unclosed tag)", '<a href="https://example.com" target="_blank" <p>', true)
+test("Missing Quotes", '<a href=https://example.com target=_blank>Link</a>', true)
+test("Garbage Input Before Tag", '<<<<<<<<<<<<<<<<<<a href="https://example.com" target="_blank">', true)
+test("Missing Href", '<a target="_blank">Link</a>', false)
+test("Empty Href", '<a href="" target="_blank">Link</a>', false)
