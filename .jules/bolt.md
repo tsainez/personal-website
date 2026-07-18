@@ -48,9 +48,6 @@
 **Learning:** Complex CSS pseudo-classes combined with descendant selectors (e.g., `:not(code) > span`) in JavaScript `querySelectorAll` calls are extremely computationally expensive because they force the browser to evaluate the condition against nearly every element in the document tree.
 **Action:** Simplify these selectors (e.g. by removing them when floating animations can naturally apply to parent block elements) to significantly reduce main thread blocking and DOM parsing overhead.
 
-## 2026-05-28 - Test Suite File I/O Optimization
-**Learning:** In Python `unittest` test suites that verify the content of static generated files (e.g., checking Jekyll's output), reading the file repeatedly in every test method creates redundant disk I/O operations and slows down execution.
-**Action:** Utilize the `@classmethod def setUpClass(cls)` hook to read and cache the file content once per class. This allows all individual test methods to reuse the cached string, preventing redundant I/O and improving test execution speed.
 ## 2026-07-18 - Caching ImageFont loading in Python scripts
 **Learning:** Loading TrueType fonts using `ImageFont.truetype` inside a loop or function can be an expensive operation. Calling it repeatedly drastically increases script execution time.
 **Action:** Use Python's `@functools.lru_cache()` decorator on the font loading function to cache the font object. This makes subsequent font retrieval near instantaneous and drastically speeds up the execution time.
