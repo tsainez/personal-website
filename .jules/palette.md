@@ -51,3 +51,7 @@
 ## 2026-06-17 - Empty State Escape Hatches
 **Learning:** When adding an empty state escape hatch to the homepage, linking back to the homepage (`/`) is redundant and circular.
 **Action:** Provide a relevant alternative link, such as the About page (`/about/`), to prevent circular navigation.
+
+## 2026-11-10 - Color Contrast in Themes
+**Learning:** Using a single color variable (like `$focus-color: #82aaff`) for both light and dark modes often leads to accessibility failures (WCAG AA). Colors that look great and have high contrast on dark backgrounds (e.g. #121212) often fail contrast requirements on light backgrounds (e.g. #ffffff).
+**Action:** Define separate semantic color variables for light and dark modes (e.g. `$focus-color` for light mode and `$focus-color-dark` for dark mode). Always test interactive element colors (like buttons, links, and focus rings) against their backgrounds in both color schemes to ensure a minimum contrast ratio of 4.5:1 for text and 3:1 for UI components.
