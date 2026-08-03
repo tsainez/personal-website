@@ -51,3 +51,7 @@
 ## 2026-07-18 - Caching ImageFont loading in Python scripts
 **Learning:** Loading TrueType fonts using `ImageFont.truetype` inside a loop or function can be an expensive operation. Calling it repeatedly drastically increases script execution time.
 **Action:** Use Python's `@functools.lru_cache()` decorator on the font loading function to cache the font object. This makes subsequent font retrieval near instantaneous and drastically speeds up the execution time.
+
+## 2026-07-19 - Caching generated CSS in Python unittests
+**Learning:** When testing static site output (like Jekyll's generated CSS), reading the same file from disk in every single test method causes redundant and slow disk I/O operations, unnecessarily bloating test suite execution time.
+**Action:** Use the `@classmethod def setUpClass(cls)` hook in Python's `unittest.TestCase` to read and cache the file content to a class variable once per test class. This significantly improves execution speed by eliminating repeated file reads.
