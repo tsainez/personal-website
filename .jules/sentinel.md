@@ -82,3 +82,8 @@
 **Vulnerability:** The client-side frame-busting logic in `security.js` attempted to hide the page by manipulating the DOM (`document.documentElement.innerHTML = ''`), which relies on scripts executing. If an attacker frames the site in an iframe using the `sandbox` attribute (e.g., `sandbox="allow-forms"` without `allow-scripts`), the script doesn't execute and the site renders normally, exposing it to clickjacking.
 **Learning:** Security controls that rely on JavaScript execution fail closed (insecurely) if scripts are disabled or blocked by sandboxing.
 **Prevention:** Implement the OWASP-recommended frame-busting mechanism: securely hide the body by default using an inline CSS style (`<style id="antiClickjack">body{display:none !important;}</style>`), allow this style through CSP using a SHA-256 hash, and only remove it via JavaScript if `window.self === window.top`.
+
+## 2026-08-17 - DOM XSS via innerHTML
+**Vulnerability:** Using innerHTML to inject plain text into the DOM.
+**Learning:** Using innerHTML even for static strings is a bad practice and can lead to XSS if the string is ever changed to dynamic content.
+**Prevention:** Always use textContent instead of innerHTML when injecting plain text or static characters into DOM elements.
