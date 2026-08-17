@@ -18,9 +18,6 @@ def verify_header_html():
         return True
     else:
         print(f"FAILURE: aria-current logic not found in {header_path}")
-        # Debug output
-        print("Content snippet:")
-        print(content)
         return False
 
 def verify_scss():

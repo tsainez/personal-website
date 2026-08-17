@@ -49,6 +49,8 @@ class TestGeneratePlaceholderCutouts(unittest.TestCase):
     @patch('generate_placeholder_cutouts.Path.exists')
     @patch('PIL.ImageFont.truetype')
     def test_font_truetype_found(self, mock_truetype, mock_exists):
+        # Clear cache so previous tests don't interfere
+        generate_placeholder_cutouts._font.cache_clear()
         # Simulate first font not found, second font found
         mock_exists.side_effect = [False, True]
         generate_placeholder_cutouts._font(12)
