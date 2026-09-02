@@ -75,3 +75,7 @@
 ## 2026-11-04 - Clear Escape Hatches
 **Learning:** When users hit a dead-end like a 404 page or an empty search results state, it can be frustrating and may lead to them abandoning the site.
 **Action:** Always provide a clear "escape hatch" in dead-end states, such as a prominent link back to the homepage or primary navigation area, to help users recover quickly.
+
+## 2026-11-04 - Tooltips for Interactive Feedback
+**Learning:** Adding a `title` attribute to a button provides a native tooltip for sighted users. While `aria-label` is great for screen readers, the `title` attribute is often just as important to improve UX by clarifying the functionality of a button, particularly when the text label is ambiguous (like "Copy") or changes based on state (like "Copied!").
+**Action:** Always ensure that buttons not only have an `aria-label` for screen reader accessibility but also a matching `title` attribute to provide tooltips and feedback for sighted users on hover.

@@ -11,6 +11,7 @@
     button.className = 'copy-code-button';
     button.type = 'button';
     button.ariaLabel = 'Copy code to clipboard';
+    button.title = 'Copy code to clipboard';
     button.innerText = 'Copy';
 
     block.appendChild(button);
@@ -57,6 +58,7 @@
       // Feedback
       button.innerText = 'Copied!';
       button.ariaLabel = 'Copied successfully';
+      button.title = 'Copied successfully';
       button.classList.add('copied');
 
       // Clear any existing timeout to prevent flickering if clicked rapidly
@@ -65,6 +67,7 @@
       button._timeoutId = setTimeout(() => {
         button.innerText = 'Copy';
         button.ariaLabel = 'Copy code to clipboard';
+        button.title = 'Copy code to clipboard';
         button.classList.remove('copied');
         delete button._timeoutId;
       }, 2000);
