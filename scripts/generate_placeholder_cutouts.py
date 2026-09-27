@@ -4,6 +4,7 @@ Run once: `python3 scripts/generate_placeholder_cutouts.py`
 Outputs go to assets/images/cutouts/.
 """
 import functools
+import math
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
@@ -45,7 +46,6 @@ def sticker() -> None:
     img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
     # Wavy outer edge built from overlapping circles
-    import math
     cx, cy = size // 2, size // 2
     points = []
     for i in range(72):
@@ -67,7 +67,6 @@ def badge() -> None:
     size = 180
     img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
-    import math
     cx, cy = size // 2, size // 2
     outer, inner = 80, 32
     points = []
