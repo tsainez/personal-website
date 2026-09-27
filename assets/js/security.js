@@ -11,7 +11,7 @@
  */
 (function() {
   if (window.self === window.top) {
-      var antiClickjack = document.getElementById("antiClickjack");
+      const antiClickjack = document.getElementById("antiClickjack");
       if (antiClickjack) {
           antiClickjack.parentNode.removeChild(antiClickjack);
       }
