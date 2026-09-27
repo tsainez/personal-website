@@ -46,7 +46,10 @@ class TestGeneratePlaceholderCutouts(unittest.TestCase):
         args, _ = mock_save.call_args
         self.assertTrue(str(args[0]).endswith('speech.png'))
 
-    @patch('generate_placeholder_cutouts.Path.exists')
+    def setUp(self):
+        generate_placeholder_cutouts._font.cache_clear()
+
+    @patch('pathlib.Path.exists')
     @patch('PIL.ImageFont.truetype')
     def test_font_truetype_found(self, mock_truetype, mock_exists):
         # Simulate first font not found, second font found
@@ -54,7 +57,7 @@ class TestGeneratePlaceholderCutouts(unittest.TestCase):
         generate_placeholder_cutouts._font(12)
         mock_truetype.assert_called_once_with("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 12)
 
-    @patch('generate_placeholder_cutouts.Path.exists')
+    @patch('pathlib.Path.exists')
     @patch('PIL.ImageFont.load_default')
     def test_font_default(self, mock_load_default, mock_exists):
         # Simulate fonts not found
