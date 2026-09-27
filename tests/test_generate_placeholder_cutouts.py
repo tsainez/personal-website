@@ -11,6 +11,9 @@ import generate_placeholder_cutouts
 
 class TestGeneratePlaceholderCutouts(unittest.TestCase):
 
+    def setUp(self):
+        generate_placeholder_cutouts._font.cache_clear()
+
     @patch('PIL.Image.Image.save')
     def test_polaroid(self, mock_save):
         generate_placeholder_cutouts.polaroid()
@@ -46,7 +49,7 @@ class TestGeneratePlaceholderCutouts(unittest.TestCase):
         args, _ = mock_save.call_args
         self.assertTrue(str(args[0]).endswith('speech.png'))
 
-    @patch('generate_placeholder_cutouts.Path.exists')
+    @patch('pathlib.Path.exists')
     @patch('PIL.ImageFont.truetype')
     def test_font_truetype_found(self, mock_truetype, mock_exists):
         # Simulate first font not found, second font found

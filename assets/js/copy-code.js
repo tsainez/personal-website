@@ -11,7 +11,7 @@
     button.className = 'copy-code-button';
     button.type = 'button';
     button.ariaLabel = 'Copy code to clipboard';
-    button.innerText = 'Copy';
+    button.textContent = 'Copy';
 
     block.appendChild(button);
   }
@@ -55,7 +55,7 @@
       await navigator.clipboard.writeText(text);
 
       // Feedback
-      button.innerText = 'Copied!';
+      button.textContent = 'Copied!';
       button.ariaLabel = 'Copied successfully';
       button.classList.add('copied');
 
@@ -63,14 +63,14 @@
       if (button._timeoutId) clearTimeout(button._timeoutId);
 
       button._timeoutId = setTimeout(() => {
-        button.innerText = 'Copy';
+        button.textContent = 'Copy';
         button.ariaLabel = 'Copy code to clipboard';
         button.classList.remove('copied');
         delete button._timeoutId;
       }, 2000);
     } catch (err) {
       console.error('Failed to copy:', err);
-      button.innerText = 'Error';
+      button.textContent = 'Error';
     }
   });
 })();
