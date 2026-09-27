@@ -11,6 +11,10 @@ import generate_placeholder_cutouts
 
 class TestGeneratePlaceholderCutouts(unittest.TestCase):
 
+    def setUp(self):
+        # Clear lru_cache on _font to ensure tests don't pollute each other's state
+        generate_placeholder_cutouts._font.cache_clear()
+
     @patch('PIL.Image.Image.save')
     def test_polaroid(self, mock_save):
         generate_placeholder_cutouts.polaroid()
