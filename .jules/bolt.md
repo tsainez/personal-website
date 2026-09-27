@@ -51,3 +51,7 @@
 ## 2026-07-18 - Caching ImageFont loading in Python scripts
 **Learning:** Loading TrueType fonts using `ImageFont.truetype` inside a loop or function can be an expensive operation. Calling it repeatedly drastically increases script execution time.
 **Action:** Use Python's `@functools.lru_cache()` decorator on the font loading function to cache the font object. This makes subsequent font retrieval near instantaneous and drastically speeds up the execution time.
+
+## 2024-05-18 - Failed Optimization: Import caching
+**Learning:** Moving `import math` to the top of the file in Python doesn't provide significant performance speedups over inline imports since Python internally caches imported modules in `sys.modules`.
+**Action:** Before optimizing basic standard library imports, use `timeit` or `cProfile` to see if it yields actual benefits, rather than assuming it skips the whole execution cycle.
