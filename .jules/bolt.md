@@ -51,3 +51,7 @@
 ## 2026-07-18 - Caching ImageFont loading in Python scripts
 **Learning:** Loading TrueType fonts using `ImageFont.truetype` inside a loop or function can be an expensive operation. Calling it repeatedly drastically increases script execution time.
 **Action:** Use Python's `@functools.lru_cache()` decorator on the font loading function to cache the font object. This makes subsequent font retrieval near instantaneous and drastically speeds up the execution time.
+
+## 2026-10-03 - Contextual querySelectorAll Optimization
+**Learning:** Querying elements using descendant selectors (e.g., `.container element`) forces the browser to evaluate the condition against the entire document tree, which is slow on complex pages.
+**Action:** When searching for descendants inside a known container, use a contextual approach: first find the container (`document.querySelectorAll('.container')`), then query within it (`container.querySelectorAll('element')`). This reduces traversal overhead and significantly speeds up execution.
