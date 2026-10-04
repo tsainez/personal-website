@@ -10,7 +10,7 @@
       // Create the anchor link button
       const anchor = document.createElement('button');
       anchor.className = 'anchor-link';
-      anchor.innerHTML = '#';
+      anchor.textContent = '#'; // Defense in depth: Use textContent for plain text to prevent DOM-based XSS
 
       const headerText = header.textContent.trim();
       const label = `Copy link to section: ${headerText}`;
