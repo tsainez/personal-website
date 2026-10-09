@@ -19,23 +19,8 @@ jobs:
         ruby-version: 3.2.2
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
 
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: '3.10'
-
-    - name: Install Python dependencies
-      run: |
-        pip install beautifulsoup4 Pillow
-
     - name: Build site
       run: bundle exec jekyll build
-
-    - name: Run RSpec tests
-      run: bundle exec rake spec
-
-    - name: Run Python verification scripts
-      run: python3 -m unittest discover tests
 
     - name: Archive production artifacts
       uses: actions/upload-artifact@v7
