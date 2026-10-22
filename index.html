@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Drive to tonysainez.com</title>
+<meta name="description" content="Tony Sainez — follow the arrow to the website.">
+<style>
+  /* Layout: one full-screen black canvas; a centered text prompt over it; nothing else. Single theme, white on black. */
+  :root { --bg: #000; --fg: #fff; --mono: "Courier New", Courier, ui-monospace, monospace; color-scheme: dark; }
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--mono); font-size: 16px; line-height: 1.6; overflow: hidden; }
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; background: var(--bg); touch-action: none; }
+  canvas:focus { outline: none; }
+  .msg {
+    position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+    pointer-events: none; white-space: pre-line;
+  }
+  .msg a { color: var(--fg); pointer-events: auto; }
+  .skip { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: max(12px, env(safe-area-inset-bottom, 0px)); font-size: 13px; opacity: .6; margin: 0; }
+  .skip a { color: var(--fg); }
+  .pad { position: fixed; left: max(16px, env(safe-area-inset-left, 0px)); bottom: max(16px, env(safe-area-inset-bottom, 0px)); display: none; grid-template-columns: repeat(3, 52px); grid-template-rows: repeat(2, 52px); gap: 6px; }
+  .pad button { font: inherit; font-size: 20px; color: var(--fg); background: transparent; border: 1px solid var(--fg); touch-action: none; user-select: none; }
+  .pad button.held { background: var(--fg); color: var(--bg); }
+  @media (hover: none) and (pointer: coarse) { .pad { display: grid; } }
+</style>
+</head>
+<body>
+
+<canvas id="c" tabindex="0" aria-label="Top-down driving game drawn from lidar returns"></canvas>
+<div class="msg" id="msg">follow the arrow to the website
+use WASD to control the car
+don't hit anything</div>
+<div class="pad" aria-label="Touch controls">
+  <span></span><button type="button" data-k="up" aria-label="Accelerate">W</button><span></span>
+  <button type="button" data-k="left" aria-label="Steer left">A</button>
+  <button type="button" data-k="down" aria-label="Reverse">S</button>
+  <button type="button" data-k="right" aria-label="Steer right">D</button>
+</div>
+<p class="skip"><a href="#site" id="skip">skip →</a></p>
+
+<script>
+(function () {
+  var SITE = "tonysainez.com\n\ntony sainez\ni test robots that drive.\n\ngithub.com/tsainez\nlinkedin.com/in/anthonysainez\ntsainez@gmail.com";
+  var cv = document.getElementById("c"), ctx = cv.getContext("2d"), msg = document.getElementById("msg");
+  var WORLD = 460, scale = 1, ox = 0, oy = 0;
+
+  function resize() {
+    var dpr = window.devicePixelRatio || 1;
+    cv.width = Math.round(innerWidth * dpr); cv.height = Math.round(innerHeight * dpr);
+    scale = Math.min(cv.width, cv.height) / WORLD;
+    ox = (cv.width - WORLD * scale) / 2; oy = (cv.height - WORLD * scale) / 2;
+    draw();
+  }
+  window.addEventListener("resize", resize);
+
+  // City: 3x3 blocks with roads between. Walls = buildings + outer bounds.
+  var rects = [];
+  for (var i = 0; i < 3; i++) for (var j = 0; j < 3; j++) rects.push({ x: 40 + i * 140, y: 40 + j * 140, w: 100, h: 100 });
+  rects.push({ x: 150, y: 14, w: 22, h: 12 }, { x: 286, y: 290, w: 12, h: 22 }, { x: 24, y: 160, w: 12, h: 22 });
+  var walls = rects.concat([{ x: -10, y: -10, w: 480, h: 10 }, { x: -10, y: 460, w: 480, h: 10 }, { x: -10, y: -10, w: 10, h: 480 }, { x: 460, y: -10, w: 10, h: 480 }]);
+  var goal = { x: 440, y: 20 }, start = { x: 20, y: 440, a: -Math.PI / 2 };
+
+  var car, keys = {}, state = "idle", mem = [], last = 0;
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function reset() { car = { x: start.x, y: start.y, a: start.a, v: 0 }; mem = []; keys = {}; }
+  reset();
+
+  function rayRect(px, py, dx, dy, r) {
+    var tmin = -Infinity, tmax = Infinity;
+    if (dx !== 0) { var t1 = (r.x - px) / dx, t2 = (r.x + r.w - px) / dx; tmin = Math.max(tmin, Math.min(t1, t2)); tmax = Math.min(tmax, Math.max(t1, t2)); }
+    else if (px < r.x || px > r.x + r.w) return Infinity;
+    if (dy !== 0) { var t3 = (r.y - py) / dy, t4 = (r.y + r.h - py) / dy; tmin = Math.max(tmin, Math.min(t3, t4)); tmax = Math.min(tmax, Math.max(t3, t4)); }
+    else if (py < r.y || py > r.y + r.h) return Infinity;
+    if (tmax < 0 || tmin > tmax) return Infinity;
+    return tmin >= 0 ? tmin : Infinity;
+  }
+  function inRect(x, y, r, pad) { return x > r.x - pad && x < r.x + r.w + pad && y > r.y - pad && y < r.y + r.h + pad; }
+
+  var RAYS = 140, RANGE = 150;
+  function scan() {
+    for (var i = 0; i < RAYS; i++) {
+      var a = (i / RAYS) * Math.PI * 2, dx = Math.cos(a), dy = Math.sin(a), best = RANGE;
+      for (var k = 0; k < walls.length; k++) { var t = rayRect(car.x, car.y, dx, dy, walls[k]); if (t < best) best = t; }
+      if (best < RANGE) mem.push({ x: car.x + dx * best, y: car.y + dy * best, a: 1 });
+    }
+    if (mem.length > 6000) mem = mem.slice(mem.length - 6000);
+  }
+
+  function step(dt) {
+    if (keys.up) car.v += 70 * dt;
+    if (keys.down) car.v -= 50 * dt;
+    car.v *= 0.985;
+    car.v = Math.max(-45, Math.min(95, car.v));
+    var steer = (keys.left ? -1 : 0) + (keys.right ? 1 : 0);
+    car.a += steer * 2.6 * dt * Math.max(-1, Math.min(1, car.v / 40));
+    car.x += Math.cos(car.a) * car.v * dt;
+    car.y += Math.sin(car.a) * car.v * dt;
+    for (var k = 0; k < walls.length; k++) if (inRect(car.x, car.y, walls[k], 5)) return crash();
+    if (Math.hypot(car.x - goal.x, car.y - goal.y) < 18) return win();
+  }
+
+  function draw() {
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.fillStyle = "#000"; ctx.fillRect(0, 0, cv.width, cv.height);
+    ctx.setTransform(scale, 0, 0, scale, ox, oy);
+    if (state === "run") scan();
+    for (var i = 0; i < mem.length; i++) {
+      var p = mem[i]; if (state === "run") p.a *= 0.992;
+      ctx.fillStyle = "rgba(255,255,255," + p.a.toFixed(3) + ")";
+      ctx.fillRect(p.x - 1, p.y - 1, 2, 2);
+    }
+    if (state === "run") mem = mem.filter(function (p) { return p.a > 0.03; });
+    // Beacon
+    var gd = Math.hypot(car.x - goal.x, car.y - goal.y);
+    var pulse = reduce ? 0.6 : 0.5 + 0.5 * Math.sin(performance.now() / 300);
+    ctx.fillStyle = "rgba(255,255,255," + (0.15 + 0.6 * pulse * Math.max(0, 1 - gd / 260)).toFixed(3) + ")";
+    ctx.beginPath(); ctx.arc(goal.x, goal.y, 5 + 4 * pulse, 0, Math.PI * 2); ctx.fill();
+    // Car
+    ctx.save(); ctx.translate(car.x, car.y); ctx.rotate(car.a);
+    ctx.strokeStyle = "#fff"; ctx.lineWidth = 1.5; ctx.strokeRect(-8, -5, 16, 10);
+    ctx.fillStyle = "#fff"; ctx.fillRect(6, -3, 2, 6);
+    ctx.restore();
+    // Arrow to the website
+    ctx.save(); ctx.translate(car.x, car.y); ctx.rotate(Math.atan2(goal.y - car.y, goal.x - car.x));
+    ctx.strokeStyle = "#fff"; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(14, 0); ctx.lineTo(28, 0); ctx.moveTo(23, -4); ctx.lineTo(28, 0); ctx.lineTo(23, 4); ctx.stroke();
+    ctx.restore();
+  }
+
+  function loop(now) {
+    if (state !== "run") return;
+    var dt = Math.min(0.05, (now - last) / 1000); last = now;
+    step(dt);
+    if (state === "run") { draw(); requestAnimationFrame(loop); }
+  }
+  function begin() { reset(); state = "run"; msg.textContent = ""; last = performance.now(); draw(); requestAnimationFrame(loop); }
+  function crash() { state = "crash"; draw(); msg.textContent = "you hit something\n\npress any key to try again"; }
+  function win() {
+    state = "win"; draw();
+    msg.textContent = "you made it\n\n" + SITE;
+  }
+  document.getElementById("skip").addEventListener("click", function (e) {
+    e.preventDefault(); state = "win"; mem = []; draw(); msg.textContent = SITE; e.target.parentNode.hidden = true;
+  });
+
+  var map = { w: "up", a: "left", s: "down", d: "right", W: "up", A: "left", S: "down", D: "right", ArrowUp: "up", ArrowLeft: "left", ArrowDown: "down", ArrowRight: "right" };
+  window.addEventListener("keydown", function (e) {
+    if (state === "win") return;
+    var k = map[e.key];
+    if (k) e.preventDefault();
+    if (state !== "run") { begin(); }
+    if (k) keys[k] = true;
+  });
+  window.addEventListener("keyup", function (e) { var k = map[e.key]; if (k) keys[k] = false; });
+  document.querySelectorAll(".pad button").forEach(function (b) {
+    var k = b.getAttribute("data-k");
+    function on(e) { e.preventDefault(); if (state === "win") return; if (state !== "run") begin(); keys[k] = true; b.classList.add("held"); }
+    function off(e) { e.preventDefault(); keys[k] = false; b.classList.remove("held"); }
+    b.addEventListener("pointerdown", on); b.addEventListener("pointerup", off); b.addEventListener("pointercancel", off); b.addEventListener("pointerleave", off);
+  });
+  cv.focus({ preventScroll: true });
+  resize();
+})();
+</script>
+
+</body>
+</html>
